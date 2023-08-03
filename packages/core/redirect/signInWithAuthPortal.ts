@@ -20,12 +20,8 @@ const _getAuthPortalAuthorizeUrl = (
 };
 
 const _getReturnTo = (return_to?: string) => {
-  if (return_to == null) {
-    // by default return to current page
-    return `${window.location.origin}${window.location.pathname}`;
-  }
-
-  return return_to;
+  // by default return to current page
+  return return_to ?? window.location.href;
 };
 
 export type _SignInWithAuthPortalConfig = {

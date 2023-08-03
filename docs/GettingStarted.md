@@ -66,7 +66,7 @@ authPortal
     // the method you use for the redirect depends on your web framework
 
     // simple example
-    window.location.href = return_to;
+    window.location.replace(return_to);
   })
   .catch((e) => {
     // something unexpected happened, display an error
