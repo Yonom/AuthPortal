@@ -1,4 +1,5 @@
-node_modules
+# npm
+node_modules/
 
 # misc
 .DS_Store
@@ -17,3 +18,13 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# testing
+coverage
+
+# next.js
+.next/
+out/
+
+# production
+build
