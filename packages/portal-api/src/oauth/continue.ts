@@ -1,11 +1,8 @@
 import { _generateRandomString } from "@authportal/core/utils/crypto";
-import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { decryptState } from "@/services/state/stateEncryption";
-import { putPayload } from "@/services/payload";
-import { getPortalOrigin } from "@/services/origin";
-
-export const runtime = "edge";
+import { decryptState } from "../services/state/stateEncryption";
+import { putPayload } from "../services/payload";
+import { getDomain, getOrigin } from "../services/origin";
 
 const ContinueSearchParams = z.object({
   state: z.string(),
@@ -19,20 +16,28 @@ const Payload = z.object({
   firebase_user: z.record(z.unknown()),
 });
 
-export const POST = async (request: NextRequest) => {
+export const postContinue = async (req: Request, env: Env) => {
+  const domain = getDomain(req);
+  const origin = getOrigin(req);
+
+  const { searchParams } = new URL(req.url);
   const { state: encryptedState } = ContinueSearchParams.parse(
-    Object.fromEntries(request.nextUrl.searchParams)
+    Object.fromEntries(searchParams)
   );
   const { payload_json } = ContinueBody.parse(
-    Object.fromEntries(await request.formData())
+    Object.fromEntries(await req.formData())
   );
   const payload = Payload.parse(JSON.parse(payload_json));
 
   const { client_id, code_challenge, redirect_uri, state } = await decryptState(
+    req,
+    env,
+    domain,
     encryptedState
   );
 
   const code = await putPayload(
+    env,
     client_id,
     redirect_uri,
     code_challenge,
@@ -44,9 +49,7 @@ export const POST = async (request: NextRequest) => {
   if (state) {
     redirectUrl.searchParams.set("state", state);
   }
-  redirectUrl.searchParams.set("iss", getPortalOrigin());
+  redirectUrl.searchParams.set("iss", origin);
 
-  return NextResponse.redirect(redirectUrl.toString(), {
-    status: 302,
-  });
+  return Response.redirect(redirectUrl.toString(), 302);
 };

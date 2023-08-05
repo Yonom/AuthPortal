@@ -8,13 +8,13 @@ import {
 } from "firebase/auth";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import { continueWithUser } from "../continueWithUser";
+import { continueWithUser } from "../app/isr/[domain]/continueWithUser";
 import { AuthButton } from "./AuthButton";
 import { AuthGoogleLogin } from "./AuthGoogleLogin";
 import { ErrorMessages } from "./ErrorMessages";
-import { PortalConfig } from "@/services/db/types";
 import { useRouter } from "next/navigation";
-import { urlWithState } from "../urlWithState";
+import { urlWithState } from "@/app/isr/[domain]/urlWithState";
+import { PortalConfig } from "@/app/isr/[domain]/withConfigPage";
 
 export const initFirebase = (serverConfig: LoginBoxProps["config"]) => {
   const { firebase_config } = serverConfig;
@@ -99,7 +99,7 @@ const AuthEmailSignUp: FC<LoginBoxProps> = ({ config }) => {
   };
 
   const handleSignIn = () => {
-    router.push(urlWithState("/login").href);
+    router.push(urlWithState("/sign-in").href);
   };
 
   return (

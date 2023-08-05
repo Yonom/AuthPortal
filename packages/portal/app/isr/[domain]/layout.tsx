@@ -1,5 +1,8 @@
 import { FC } from "react";
 
+export const dynamic = "error";
+export const dynamicParams = true;
+
 type LayoutProps = {
   children: React.ReactNode;
 };

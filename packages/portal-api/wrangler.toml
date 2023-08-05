@@ -1,0 +1,8 @@
+name = "portal-api"
+main = "src/worker.ts"
+compatibility_date = "2023-08-01"
+
+kv_namespaces = [
+  { binding = "CONFIG", id = "949937496bc84775a10b1e120cd7dcb9" },
+  { binding = "PAYLOAD", id = "dc45777d47224981a4e0f3eef7d03d87" },
+]

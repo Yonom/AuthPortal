@@ -1,5 +1,8 @@
+"use client";
+
 import { z } from "zod";
 import { AuthPortalError, ErrorView } from "../AuthPortalError";
+import { useSearchParams } from "next/navigation";
 
 const ErrorSearchParams = z.object({
   error: z.string(),
@@ -7,13 +10,11 @@ const ErrorSearchParams = z.object({
   error_uri: z.string().optional(),
 });
 
-const ErrorPage = async ({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) => {
-  const { error, error_description, error_uri } =
-    ErrorSearchParams.parse(searchParams);
+const ErrorPage = () => {
+  const searchParams = useSearchParams();
+  const { error, error_description, error_uri } = ErrorSearchParams.parse(
+    Object.fromEntries(searchParams)
+  );
   const err = new AuthPortalError(error, error_description, error_uri);
   return <ErrorView error={err} />;
 };

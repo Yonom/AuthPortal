@@ -1,10 +1,8 @@
 import { _generateRandomString } from "@authportal/core/utils/crypto";
-import { cookies, headers } from "next/headers";
 import { aesGcmDecrypt, aesGcmEncrypt } from "./aesGcm";
 import { z } from "zod";
-import { getConfig } from "../config";
-import { ConfigKVObject } from "../db/types";
-import { getPortalHost } from "../origin";
+import { ConfigKVObject, getConfig } from "../config";
+import { parse, serialize } from "cookie";
 
 const COOKIE_KEY = "authportal.key";
 
@@ -45,17 +43,26 @@ const parseState = async (config: ConfigKVObject, unsafeState: unknown) => {
   return state;
 };
 
-export const encryptState = async (unsafeState: Record<string, unknown>) => {
-  const config = await getConfig(getPortalHost());
+export const encryptState = async (
+  req: Request,
+  env: Env,
+  domain: string,
+  unsafeState: Record<string, unknown>
+) => {
+  const config = await getConfig(env, domain);
   const state = await parseState(config, unsafeState);
 
-  let cookie = cookies().get(COOKIE_KEY)?.value;
+  let cookie = parse(req.headers.get("Cookie") || "")[COOKIE_KEY];
   if (cookie == null) {
     cookie = _generateRandomString();
   }
 
-  const secure = !(headers().get("X-Forwarded-Proto") === "http");
-  cookies().set(COOKIE_KEY, cookie, {
+  // allow localhost for testing
+  const secure =
+    domain !== "localhost" ||
+    !(req.headers.get("X-Forwarded-Proto") === "http");
+
+  const setCookie = serialize(COOKIE_KEY, cookie, {
     path: "/",
     secure,
     httpOnly: true,
@@ -63,14 +70,21 @@ export const encryptState = async (unsafeState: Record<string, unknown>) => {
     maxAge: 60 * 60 * 24, // 1 day
   });
 
-  return aesGcmEncrypt(state, cookie);
+  const encryptedState = await aesGcmEncrypt(state, cookie);
+
+  return { setCookie, encryptedState };
 };
 
-export const decryptState = async (encryptedState: string) => {
-  const cookie = cookies().get(COOKIE_KEY)?.value;
+export const decryptState = async (
+  req: Request,
+  env: Env,
+  domain: string,
+  encryptedState: string
+) => {
+  const cookie = parse(req.headers.get("Cookie") || "")[COOKIE_KEY];
   if (cookie == null) throw new Error("Invalid cookie");
 
-  const config = await getConfig(getPortalHost());
+  const config = await getConfig(env, domain);
   const res = await aesGcmDecrypt(encryptedState, cookie);
 
   return parseState(config, res);

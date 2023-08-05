@@ -20,7 +20,7 @@ export async function aesGcmEncrypt(
   const ct = await crypto.subtle.encrypt(alg, key, dataBytes);
 
   const ivStr = _bytesToBase64UrlSafe(iv);
-  const ctStr = _bytesToBase64UrlSafe(ct);
+  const ctStr = _bytesToBase64UrlSafe(new Uint8Array(ct));
 
   return `${ivStr}.${ctStr}`;
 }

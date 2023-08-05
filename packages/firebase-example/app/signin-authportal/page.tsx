@@ -23,9 +23,5 @@ export default function HandleRedirect() {
       });
   }, [router]);
 
-  return (
-    <div>
-      Loading...
-    </div>
-  );
+  return <div>Loading...</div>;
 }

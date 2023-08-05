@@ -9,7 +9,7 @@ const _getAuthPortalAuthorizeUrl = (
   scope: "firebase_auth",
   redirect_uri: string
 ) => {
-  const url = new URL(`https://${domain}/authorize`);
+  const url = new URL(`https://${domain}/oauth/authorize`);
   url.searchParams.set("response_type", "code");
   url.searchParams.set("client_id", client_id);
   url.searchParams.set("code_challenge", code_challenge);

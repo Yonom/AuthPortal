@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@authportal/core"],
-  env: {
-    KV_PROVIDER: process.env.KV_PROVIDER ?? "inMemory",
-  },
   async rewrites() {
     return [
       {
-        source: "/__/auth/(.*)",
-        destination: "https://authportal-app.firebaseapp.com/__/auth/$1",
+        source: "/__/auth/:path*",
+        destination: "https://authportal-app.firebaseapp.com/__/auth/:path*",
+      },
+      {
+        source: "/oauth/:path*",
+        destination: `https://portal-api.authportal.dev/oauth/:path*`,
       },
       {
         source: "/:path*",

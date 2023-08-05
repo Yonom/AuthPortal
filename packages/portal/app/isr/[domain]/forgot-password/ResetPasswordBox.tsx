@@ -4,11 +4,11 @@ import { FirebaseError, initializeApp } from "firebase/app";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import { ErrorMessages } from "../components/ErrorMessages";
-import { AuthButton } from "../components/AuthButton";
-import { PortalConfig } from "@/services/db/types";
+import { ErrorMessages } from "../../../../components/ErrorMessages";
+import { AuthButton } from "../../../../components/AuthButton";
 import { useRouter } from "next/navigation";
 import { urlWithState } from "../urlWithState";
+import { PortalConfig } from "../withConfigPage";
 
 export const initFirebase = (serverConfig: ResetPasswordBoxProps["config"]) => {
   const { firebase_config } = serverConfig;

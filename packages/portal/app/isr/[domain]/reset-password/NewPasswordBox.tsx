@@ -9,11 +9,10 @@ import {
 } from "firebase/auth";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import { ErrorMessages } from "../components/ErrorMessages";
-import { AuthButton } from "../components/AuthButton";
-import { useRouter } from "next/navigation";
+import { ErrorMessages } from "../../../../components/ErrorMessages";
+import { AuthButton } from "../../../../components/AuthButton";
 import { continueWithUser } from "../continueWithUser";
-import { PortalConfig } from "@/services/db/types";
+import { PortalConfig } from "../withConfigPage";
 
 export const initFirebase = (serverConfig: NewPasswordBoxProps["config"]) => {
   const { firebase_config } = serverConfig;

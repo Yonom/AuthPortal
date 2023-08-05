@@ -2,20 +2,28 @@ import {
   _generateCodeChallenge,
   _generateRandomString,
 } from "@authportal/core/utils/crypto";
-import { _AuthPortalFirebasePayload } from "@authportal/core/utils/api";
-import { getDb } from "./db";
+import type { _AuthPortalFirebasePayload } from "@authportal/core/utils/api";
+
+export type PayloadKVObject = {
+  code_challenge: string;
+  redirect_uri: string;
+  payload: _AuthPortalFirebasePayload;
+};
 
 export const getPayload = async (
+  env: Env,
   client_id: string,
   redirect_uri: string,
   code: string,
   code_verifier: string
 ) => {
-  const db = await getDb();
   const payloadKey = `${client_id}.${code}`;
-  const payloadObject = await db.payload.get(payloadKey);
+  const payloadObject = await env.PAYLOAD.get<PayloadKVObject>(
+    payloadKey,
+    "json"
+  );
   if (payloadObject == null) return null;
-  await db.payload.del(payloadKey);
+  await env.PAYLOAD.delete(payloadKey);
 
   if (payloadObject.redirect_uri !== redirect_uri) return null;
 
@@ -26,6 +34,7 @@ export const getPayload = async (
 };
 
 export const putPayload = async (
+  env: Env,
   client_id: string,
   redirect_uri: string,
   code_challenge: string,
@@ -33,16 +42,15 @@ export const putPayload = async (
 ) => {
   const code = _generateRandomString();
 
-  const db = await getDb();
-  await db.payload.set(
+  await env.PAYLOAD.put(
     `${client_id}.${code}`,
-    {
+    JSON.stringify({
       redirect_uri,
       code_challenge,
       payload,
-    },
+    }),
     {
-      expire: 60 * 5, // 5 minutes
+      expirationTtl: 60 * 5, // 5 minutes
     }
   );
 

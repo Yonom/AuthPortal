@@ -1,6 +1,5 @@
-import { PortalConfig } from "@/services/db/types";
-import LoginBox from "../components/LoginBox";
-import { withConfigPage } from "../withConfigPage";
+import LoginBox from "../../../../components/LoginBox";
+import { PortalConfig, withConfigPage } from "../withConfigPage";
 import { FC } from "react";
 
 type SignupPageProps = {
