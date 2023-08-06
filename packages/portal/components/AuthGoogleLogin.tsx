@@ -2,8 +2,8 @@ import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { FC } from "react";
 import { AuthButton } from "./AuthButton";
 import { initFirebase } from "./LoginBox";
-import { urlWithState } from "@/app/isr/[domain]/urlWithState";
-import { PortalConfig } from "@/app/isr/[domain]/withConfigPage";
+import { urlWithReq } from "@/components/req/urlWithReq";
+import { PortalConfig } from "@/components/withConfigPage";
 
 type AuthGoogleLoginProps = {
   config: PortalConfig;
@@ -13,7 +13,7 @@ export const AuthGoogleLogin: FC<AuthGoogleLoginProps> = ({ config }) => {
     const { auth } = initFirebase(config);
     const provider = new GoogleAuthProvider();
 
-    const redirectUrl = urlWithState("/firebase/redirect");
+    const redirectUrl = new URL(await urlWithReq("/firebase/redirect"));
     redirectUrl.searchParams.set("connection", GoogleAuthProvider.PROVIDER_ID);
 
     // back button: /sign-in, forward redirect: /firebase/redirect

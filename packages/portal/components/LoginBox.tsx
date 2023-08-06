@@ -8,13 +8,12 @@ import {
 } from "firebase/auth";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import { continueWithUser } from "../app/isr/[domain]/continueWithUser";
+import { continueWithUser } from "./req/continueWithUser";
 import { AuthButton } from "./AuthButton";
 import { AuthGoogleLogin } from "./AuthGoogleLogin";
 import { ErrorMessages } from "./ErrorMessages";
-import { useRouter } from "next/navigation";
-import { urlWithState } from "@/app/isr/[domain]/urlWithState";
-import { PortalConfig } from "@/app/isr/[domain]/withConfigPage";
+import { PortalConfig } from "@/components/withConfigPage";
+import LinkWithReq from "./link/LinkWithReq";
 
 export const initFirebase = (serverConfig: LoginBoxProps["config"]) => {
   const { firebase_config } = serverConfig;
@@ -72,7 +71,6 @@ const AuthEmailSignUp: FC<LoginBoxProps> = ({ config }) => {
       password: "",
     },
   });
-  const router = useRouter();
 
   const handleEmailPasswordSignup = async () => {
     try {
@@ -96,10 +94,6 @@ const AuthEmailSignUp: FC<LoginBoxProps> = ({ config }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSignIn = () => {
-    router.push(urlWithState("/sign-in").href);
   };
 
   return (
@@ -130,9 +124,9 @@ const AuthEmailSignUp: FC<LoginBoxProps> = ({ config }) => {
       <AuthButton type="submit" text="Sign up" loading={loading} />
       <p className="text-xs">
         Have an account?{" "}
-        <a onClick={handleSignIn} className="text-blue-500">
+        <LinkWithReq href="/sign-in" className="text-blue-500">
           Log in
-        </a>
+        </LinkWithReq>
       </p>
     </form>
   );
@@ -152,7 +146,6 @@ const AuthEmailLogin: FC<LoginBoxProps> = ({ config }) => {
       password: "",
     },
   });
-  const router = useRouter();
 
   const handleEmailPasswordLogin = async () => {
     try {
@@ -176,14 +169,6 @@ const AuthEmailLogin: FC<LoginBoxProps> = ({ config }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSignUp = () => {
-    router.push(urlWithState("/sign-up").href);
-  };
-
-  const handleForgotPassword = () => {
-    router.push(urlWithState("/forgot-password").href);
   };
 
   return (
@@ -211,18 +196,18 @@ const AuthEmailLogin: FC<LoginBoxProps> = ({ config }) => {
           {errors.password.message}
         </p>
       )}
-      <a
-        onClick={handleForgotPassword}
+      <LinkWithReq
+        href="/forgot-password"
         className="text-blue-500 font-bold text-xs"
       >
         Forgot password?
-      </a>
+      </LinkWithReq>
       <AuthButton type="submit" text="Log in" loading={loading} />
       <p className="text-xs">
         Don&apos;t have an account?{" "}
-        <a onClick={handleSignUp} className="text-blue-500">
+        <LinkWithReq href="/sign-up" className="text-blue-500">
           Sign up
-        </a>
+        </LinkWithReq>
       </p>
     </form>
   );

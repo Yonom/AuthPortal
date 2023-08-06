@@ -11,8 +11,8 @@ import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessages } from "../../../../components/ErrorMessages";
 import { AuthButton } from "../../../../components/AuthButton";
-import { continueWithUser } from "../continueWithUser";
-import { PortalConfig } from "../withConfigPage";
+import { continueWithUser } from "../../../../components/req/continueWithUser";
+import { PortalConfig } from "../../../../components/withConfigPage";
 
 export const initFirebase = (serverConfig: NewPasswordBoxProps["config"]) => {
   const { firebase_config } = serverConfig;

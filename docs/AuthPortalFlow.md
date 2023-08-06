@@ -9,7 +9,7 @@ The following is a visualization of the AuthPortal Flow:
 ```mermaid
 sequenceDiagram
     App->>App: Generate code_verifier <br/> and code_challenge
-    App->>AuthPortal: Authorization Code Request + code_challenge to /oauth/authorize
+    App->>AuthPortal: Authorization Code Request + code_challenge to /authorize
     AuthPortal->>Firebase: signInWith___
     Note left of Firebase: for example, <br />signInWithRedirect<br />via Google
     Firebase->>AuthPortal: firebase_user
@@ -34,7 +34,7 @@ Do not reuse the same `code_verifier` and `code_challenge`, a new pair must be g
 The Authorization Endpoint is as follows:
 
 ```
-GET https://<domain>/oauth/authorize
+GET https://<domain>/authorize
   ?response_type=code
   &client_id=<client_id>
   &code_challenge=<code_challenge>

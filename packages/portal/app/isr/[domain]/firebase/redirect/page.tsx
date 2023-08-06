@@ -1,4 +1,4 @@
 import FirebaseRedirectBox from "./FirebaseRedirectBox";
-import { withConfigPage } from "../../withConfigPage";
+import { withConfigPage } from "../../../../../components/withConfigPage";
 
 export default withConfigPage(FirebaseRedirectBox);

@@ -4,11 +4,13 @@ import { z } from "zod";
 import { AuthPortalError, ErrorView } from "../AuthPortalError";
 import { useSearchParams } from "next/navigation";
 
-const ErrorSearchParams = z.object({
-  error: z.string(),
-  error_description: z.string(),
-  error_uri: z.string().optional(),
-});
+const ErrorSearchParams = z
+  .object({
+    error: z.string(),
+    error_description: z.string(),
+    error_uri: z.string().optional(),
+  })
+  .strict();
 
 const ErrorPage = () => {
   const searchParams = useSearchParams();

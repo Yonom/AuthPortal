@@ -1,40 +1,31 @@
 import { _generateRandomString } from "@authportal/core/utils/crypto";
+import { AuthorizeParams } from "@authportal/portal/components/req/reqEncryption";
 import { z } from "zod";
-import { decryptState } from "../services/state/stateEncryption";
 import { putPayload } from "../services/payload";
 import { getDomain, getOrigin } from "../services/origin";
+import { validateAuthorizeParams } from "../services/validateAuthorizeParams";
 
-const ContinueSearchParams = z.object({
-  state: z.string(),
-});
-
-const ContinueBody = z.object({
+const ContinueBody = AuthorizeParams.extend({
   payload_json: z.string(),
-});
+}).strict();
 
-const Payload = z.object({
-  firebase_user: z.record(z.unknown()),
-});
+const Payload = z
+  .object({
+    firebase_user: z.record(z.unknown()),
+  })
+  .strict();
 
 export const postContinue = async (req: Request, env: Env) => {
   const domain = getDomain(req);
   const origin = getOrigin(req);
 
-  const { searchParams } = new URL(req.url);
-  const { state: encryptedState } = ContinueSearchParams.parse(
-    Object.fromEntries(searchParams)
-  );
-  const { payload_json } = ContinueBody.parse(
+  const { payload_json, ...unsafeAuthorizeParams } = ContinueBody.parse(
     Object.fromEntries(await req.formData())
   );
-  const payload = Payload.parse(JSON.parse(payload_json));
+  const { client_id, code_challenge, redirect_uri, state } =
+    await validateAuthorizeParams(env, domain, unsafeAuthorizeParams);
 
-  const { client_id, code_challenge, redirect_uri, state } = await decryptState(
-    req,
-    env,
-    domain,
-    encryptedState
-  );
+  const payload = Payload.parse(JSON.parse(payload_json));
 
   const code = await putPayload(
     env,

@@ -6,9 +6,9 @@ import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessages } from "../../../../components/ErrorMessages";
 import { AuthButton } from "../../../../components/AuthButton";
-import { useRouter } from "next/navigation";
-import { urlWithState } from "../urlWithState";
-import { PortalConfig } from "../withConfigPage";
+import { urlWithReq } from "../../../../components/req/urlWithReq";
+import { PortalConfig } from "../../../../components/withConfigPage";
+import LinkWithReq from "@/components/link/LinkWithReq";
 
 export const initFirebase = (serverConfig: ResetPasswordBoxProps["config"]) => {
   const { firebase_config } = serverConfig;
@@ -48,14 +48,13 @@ const AuthEmailLogin: FC<ResetPasswordBoxProps> = ({ config }) => {
       email: "",
     },
   });
-  const router = useRouter();
 
   const handleEmailPasswordLogin = async () => {
     try {
       const { auth } = initFirebase(config);
       const { email } = getValues();
       await sendPasswordResetEmail(auth, email, {
-        url: urlWithState("/sign-in").href,
+        url: await urlWithReq("/sign-in"),
       });
     } catch (ex) {
       if (ex instanceof FirebaseError) {
@@ -66,10 +65,6 @@ const AuthEmailLogin: FC<ResetPasswordBoxProps> = ({ config }) => {
         throw ex;
       }
     }
-  };
-
-  const handleSignIn = () => {
-    router.push(urlWithState("/sign-in").href);
   };
 
   return (
@@ -88,9 +83,9 @@ const AuthEmailLogin: FC<ResetPasswordBoxProps> = ({ config }) => {
       )}
       <AuthButton type="submit" text="Send Reset Email" />
       <p className="text-xs">
-        <a onClick={handleSignIn} className="text-blue-500">
+        <LinkWithReq href="/sign-in" className="text-blue-500">
           Back
-        </a>
+        </LinkWithReq>
       </p>
     </form>
   );

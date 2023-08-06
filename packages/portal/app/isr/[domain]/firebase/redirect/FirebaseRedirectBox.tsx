@@ -10,8 +10,8 @@ import {
 import { FC, useEffect } from "react";
 import { REDIRECT_FAILED_ERROR, getErrorPath } from "../../AuthPortalError";
 import { useRouter } from "next/navigation";
-import { continueWithUser } from "../../continueWithUser";
-import { PortalConfig } from "../../withConfigPage";
+import { continueWithUser } from "../../../../../components/req/continueWithUser";
+import { PortalConfig } from "../../../../../components/withConfigPage";
 
 const handleRedirect = async (
   config: FirebaseRedirectHandlerProps["config"]

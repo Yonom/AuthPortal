@@ -5,12 +5,14 @@ import {
 import { z } from "zod";
 import { getPayload } from "../services/payload";
 
-const PostTokenContent = z.object({
-  client_id: z.string(),
-  redirect_uri: z.string(),
-  code: z.string().length(43),
-  code_verifier: z.string().min(43).max(128),
-});
+const PostTokenContent = z
+  .object({
+    client_id: z.string(),
+    redirect_uri: z.string(),
+    code: z.string().length(43),
+    code_verifier: z.string().min(43).max(128),
+  })
+  .strict();
 
 export const postToken = async (req: Request, env: Env) => {
   const body = await req.json();
