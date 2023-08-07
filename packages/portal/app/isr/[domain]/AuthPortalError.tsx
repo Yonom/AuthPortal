@@ -43,8 +43,7 @@ export const getErrorPath = (error: Error) => {
   const authportalError =
     error instanceof AuthPortalError ? error : UNKNOWN_ERROR();
 
-  const url = new URL(window.location.origin);
-  url.pathname = "/error";
+  const url = new URL("/error", window.location.origin);
   url.searchParams.set("error", authportalError.name);
   url.searchParams.set("error_description", authportalError.message);
   if (authportalError.error_uri) {

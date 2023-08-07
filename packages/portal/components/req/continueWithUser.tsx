@@ -1,7 +1,6 @@
 import { _AuthPortalFirebasePayload } from "@authportal/core/utils/api";
 import { User } from "firebase/auth";
 import { getReq } from "./urlWithReq";
-import { decryptReq } from "./reqEncryption";
 
 const postRedirect = (url: string, data: Record<string, string>) => {
   const form = document.createElement("form");
@@ -20,12 +19,23 @@ const postRedirect = (url: string, data: Record<string, string>) => {
   form.submit();
 };
 
+type ContinuePostData = {
+  client_id: string;
+  code_challenge: string;
+  scope: "firebase_auth";
+  redirect_uri: string;
+  state?: string;
+  payload_json: string;
+};
+
 export const continueWithUser = async (user: User) => {
-  const params = await decryptReq(await getReq());
+  // TODO error handling
+  const req = await getReq();
+
   postRedirect("/oauth/continue", {
-    ...params,
+    ...req.reqObj,
     payload_json: JSON.stringify({
       firebase_user: user.toJSON() as Record<string, unknown>,
     } as _AuthPortalFirebasePayload),
-  });
+  } as ContinuePostData);
 };

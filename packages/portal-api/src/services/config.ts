@@ -12,7 +12,6 @@ export type ConfigKVObject = {
   };
 };
 
-
 export const getConfig = async (env: Env, domain: string) => {
   const res = await env.CONFIG.get<ConfigKVObject>(domain, "json");
   if (!res) throw new Error("Invalid domain");

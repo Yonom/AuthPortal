@@ -6,7 +6,7 @@ import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessages } from "../../../../components/ErrorMessages";
 import { AuthButton } from "../../../../components/AuthButton";
-import { urlWithReq } from "../../../../components/req/urlWithReq";
+import { getURLWithReq } from "../../../../components/req/urlWithReq";
 import { PortalConfig } from "../../../../components/withConfigPage";
 import LinkWithReq from "@/components/link/LinkWithReq";
 
@@ -54,7 +54,7 @@ const AuthEmailLogin: FC<ResetPasswordBoxProps> = ({ config }) => {
       const { auth } = initFirebase(config);
       const { email } = getValues();
       await sendPasswordResetEmail(auth, email, {
-        url: await urlWithReq("/sign-in"),
+        url: await getURLWithReq("/sign-in"),
       });
     } catch (ex) {
       if (ex instanceof FirebaseError) {

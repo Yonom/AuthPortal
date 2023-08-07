@@ -2,6 +2,8 @@
 
 import { z } from "zod";
 import { redirect, useSearchParams } from "next/navigation";
+import { useNoSSR } from "@/components/req/useNoSSR";
+import Loading from "./loading";
 
 const FirebaseActionSearchParams = z.object({
   mode: z.string(),
@@ -11,20 +13,25 @@ const FirebaseActionSearchParams = z.object({
 });
 
 const ContinueUrlSearchParams = z.object({
-  state: z.string(),
+  req: z.string(),
 });
 
 const FirebaseActionPage = () => {
+  useNoSSR();
+
   const searchParams = useSearchParams();
   const { mode, oobCode, continueUrl } = FirebaseActionSearchParams.parse(
     Object.fromEntries(searchParams)
   );
-  const { state: encryptedState } = ContinueUrlSearchParams.parse(
+  const { req } = ContinueUrlSearchParams.parse(
     Object.fromEntries(new URL(continueUrl).searchParams)
   );
 
   if (mode === "resetPassword") {
-    redirect(`/new-password?state=${encryptedState}&oobCode=${oobCode}`);
+    const url = new URL("/reset-password", window.location.origin);
+    url.searchParams.set("req", req);
+    url.searchParams.set("oobCode", oobCode);
+    redirect(url.href);
   } else if (mode === "recoverEmail") {
     // TODO
   } else if (mode === "verifyEmail") {
@@ -39,7 +46,12 @@ const FirebaseActionPage = () => {
     // TODO
   }
 
-  return null;
+  // fall back to firebase's action handler
+  const url = new URL(window.location.href);
+  url.pathname = "/__/auth/action";
+  redirect(url.href);
+
+  return <Loading />;
 };
 
 export default FirebaseActionPage;

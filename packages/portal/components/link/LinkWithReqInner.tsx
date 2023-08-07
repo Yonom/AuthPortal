@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import Link from "next/link";
-import { useUrlWithReq } from "../req/urlWithReq";
+import { useURLWithReq } from "../req/urlWithReq";
 
 export type LinkWithReqProps = {
   href: string;
@@ -11,7 +11,8 @@ export type LinkWithReqProps = {
 };
 
 const LinkWithReqInner: FC<LinkWithReqProps> = ({ href, ...rest }) => {
-  const url = useUrlWithReq(href);
+  const url = useURLWithReq(href);
+
   return <Link href={url} {...rest} />;
 };
 

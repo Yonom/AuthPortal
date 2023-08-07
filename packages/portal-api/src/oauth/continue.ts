@@ -2,7 +2,7 @@ import { _generateRandomString } from "@authportal/core/utils/crypto";
 import { AuthorizeParams } from "@authportal/portal/components/req/reqEncryption";
 import { z } from "zod";
 import { putPayload } from "../services/payload";
-import { getDomain, getOrigin } from "../services/origin";
+import { getHostname, getOrigin } from "../services/origin";
 import { validateAuthorizeParams } from "../services/validateAuthorizeParams";
 
 const ContinueBody = AuthorizeParams.extend({
@@ -16,7 +16,7 @@ const Payload = z
   .strict();
 
 export const postContinue = async (req: Request, env: Env) => {
-  const domain = getDomain(req);
+  const domain = getHostname(req);
   const origin = getOrigin(req);
 
   const { payload_json, ...unsafeAuthorizeParams } = ContinueBody.parse(

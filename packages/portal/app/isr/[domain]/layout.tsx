@@ -1,3 +1,4 @@
+import EnsureDomainMatch from "@/components/EnsureDomainMatch";
 import { FC } from "react";
 
 export const dynamic = "error";
@@ -10,6 +11,7 @@ type LayoutProps = {
 const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <div className="flex justify-center items-center h-screen">
+      <EnsureDomainMatch />
       <div className="border border-black rounded w-[400px] min-h-50 p-6">
         {children}
       </div>

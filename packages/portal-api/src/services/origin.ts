@@ -2,11 +2,24 @@ export const getProto = (req: Request) => {
   return req.headers.get("X-Forwarded-Proto") || "https";
 };
 
-export const getDomain = (req: Request) => {
-  const { hostname } = new URL(req.url);
-  return req.headers.get("X-Forwarded-Host") || hostname;
+export const getHostname = (req: Request) => {
+  const forwardedHost = req.headers.get("X-Forwarded-Host");
+  if (forwardedHost) {
+    return new URL("//" + forwardedHost, req.url).hostname;
+  } else {
+    return new URL(req.url).hostname;
+  }
+};
+
+export const getHost = (req: Request) => {
+  const forwardedHost = req.headers.get("X-Forwarded-Host");
+  if (forwardedHost) {
+    return forwardedHost;
+  } else {
+    return new URL(req.url).host;
+  }
 };
 
 export const getOrigin = (req: Request) => {
-  return getProto(req) + "://" + getDomain(req);
+  return getProto(req) + "://" + getHost(req);
 };

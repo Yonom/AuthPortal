@@ -53,6 +53,7 @@ const AuthNewPassword: FC<NewPasswordBoxProps> = ({ config }) => {
   });
 
   const handleNewPassword = async () => {
+    // TODO get email from url earlier
     const oobCode = new URLSearchParams(window.location.search).get("oobCode");
     if (!oobCode) throw new Error("No oobCode found in url");
 

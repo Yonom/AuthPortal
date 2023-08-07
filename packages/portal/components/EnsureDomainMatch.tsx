@@ -1,10 +1,9 @@
 "use client";
 
-type EnsureDomainMatchProps = {
-  domain: string;
-};
+import { useParams } from "next/navigation";
 
-const EnsureDomainMatch: React.FC<EnsureDomainMatchProps> = ({ domain }) => {
+const EnsureDomainMatch: React.FC = () => {
+  const { domain } = useParams();
   // The /isr/[domain] route is not directly accessible and this assertion must always pass.
   // This is an extra security measure to prevent XSRF in case of a misconfiguration.
 

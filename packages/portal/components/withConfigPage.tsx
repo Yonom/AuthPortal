@@ -39,12 +39,7 @@ export const withConfigPage = (
     params: { domain: string };
   }) => {
     const { portal_config } = await fetchConfig(domain);
-    return (
-      <>
-        <EnsureDomainMatch domain={domain} />
-        <Page config={portal_config} />
-      </>
-    );
+    return <Page config={portal_config} />;
   };
   return WithConfigPage;
 };

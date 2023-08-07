@@ -3,7 +3,7 @@ import { aesGcmDecrypt, aesGcmEncrypt } from "./aesGcm";
 import { z } from "zod";
 import jsCookie from "js-cookie";
 
-const COOKIE_KEY = "authportal.key";
+const COOKIE_KEY = "authportal-key";
 
 export const AuthorizeParams = z.object({
   client_id: z.string(),
@@ -24,19 +24,24 @@ export const encryptReq = async (
   if (cookie == null) {
     cookie = _generateRandomString();
   }
-  jsCookie.set(COOKIE_KEY, cookie, { expires: 1 });
+
+  const secure = window.location.protocol !== "http";
+  jsCookie.set(COOKIE_KEY, cookie, {
+    expires: 1,
+    secure,
+    sameSite: secure ? "None" : "Lax",
+  });
+
   const req = await aesGcmEncrypt(params, cookie);
 
   return req;
 };
 
-export const decryptReq = async (
-  encryptedState: string
-): Promise<AuthorizeParams> => {
+export const decryptReq = async (req: string): Promise<AuthorizeParams> => {
   const cookie = jsCookie.get(COOKIE_KEY);
   if (cookie == null) throw new Error("Invalid cookie");
 
-  const unsafeParams = await aesGcmDecrypt(encryptedState, cookie);
+  const unsafeParams = await aesGcmDecrypt(req, cookie);
 
   return AuthorizeParams.parse(unsafeParams);
 };
