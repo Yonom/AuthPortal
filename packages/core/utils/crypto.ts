@@ -1,13 +1,22 @@
-export const _bytesToBase64UrlSafe = (array: Uint8Array | ArrayBuffer) => {
-  return Buffer.from(array)
-    .toString("base64")
+function base64ToBytes(base64: string) {
+  const binString = atob(base64);
+  return Uint8Array.from(binString, (m) => m.codePointAt(0) ?? 0);
+}
+
+function bytesToBase64(bytes: Uint8Array) {
+  const binString = Array.from(bytes, (x) => String.fromCodePoint(x)).join("");
+  return btoa(binString);
+}
+
+export const _bytesToBase64UrlSafe = (array: Uint8Array) => {
+  return bytesToBase64(array)
     .replace(/=/g, "")
     .replace(/\+/g, "-")
     .replace(/\//g, "_");
 };
 
 export const _base64UrlSafeToBytes = (b64: string) => {
-  return Buffer.from(b64.replace(/-/g, "+").replace(/_/g, "/"), "base64");
+  return base64ToBytes(b64.replace(/-/g, "+").replace(/_/g, "/"));
 };
 
 export const _generateRandomString = () => {
@@ -21,5 +30,5 @@ export const _generateCodeChallenge = async (code_verifier: string) => {
     "SHA-256",
     new TextEncoder().encode(code_verifier)
   );
-  return _bytesToBase64UrlSafe(digest);
+  return _bytesToBase64UrlSafe(new Uint8Array(digest));
 };
