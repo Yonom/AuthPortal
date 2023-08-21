@@ -22,7 +22,7 @@ const respond = (
         state,
       },
     });
-    window.parent.postMessage(message, { targetOrigin });
+    window.opener.postMessage(message, { targetOrigin });
   } else {
     const redirectUrl = new URL(redirect_uri);
     redirectUrl.searchParams.set("code", code);
