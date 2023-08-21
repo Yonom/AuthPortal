@@ -15,13 +15,13 @@ const respond = (
 ) => {
   if (response_mode === "web_message") {
     const targetOrigin = new URL(redirect_uri).origin;
-    const message = JSON.stringify({
+    const message = {
       type: "authorization_response",
       response: {
         code,
         state,
       },
-    });
+    };
     window.opener.postMessage(message, { targetOrigin });
   } else {
     const redirectUrl = new URL(redirect_uri);
