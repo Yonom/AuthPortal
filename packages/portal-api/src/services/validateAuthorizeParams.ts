@@ -22,9 +22,9 @@ const validateRedirectUri = (
 ) => {
   // for web_message (popup), only validate the origin
   if (response_mode === "web_message") {
-    const redirect_origin = new URL(redirect_uri).origin;
+    const redirect_origin = new URL(redirect_uri).origin + "/";
     const allowed_redirect_origins = allowed_redirect_uris.map(
-      (uri) => new URL(uri).origin,
+      (uri) => new URL(uri).origin + "/",
     );
     return _isRedirectUriMatch(redirect_origin, allowed_redirect_origins);
   }

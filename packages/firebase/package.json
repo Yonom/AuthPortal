@@ -2,7 +2,9 @@
   "name": "@authportal/firebase",
   "version": "0.0.0",
   "dependencies": {
-    "@authportal/core": "0.0.0",
-    "@firebase/auth": "^1.1.0"
+    "@authportal/core": "0.0.0"
+  },
+  "peerDependencies": {
+    "@firebase/auth": "^1.2.0"
   }
 }
