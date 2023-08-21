@@ -2,8 +2,8 @@ import { _getAuthorizeUrl, _getToken } from "../utils/portalApi";
 import { _generateCodeChallenge, _generateRandomString } from "../utils/crypto";
 
 export const _openWindow = (url: string) => {
-  const width = 400;
-  const height = 600;
+  const width = 500;
+  const height = 700;
   const left = window.screenX + (window.innerWidth - width) / 2;
   const top = window.screenY + (window.innerHeight - height) / 2;
 
@@ -20,7 +20,7 @@ type _AuthenticationResult = {
 
 type _PopupMessage = {
   type: "authorization_response";
-  payload:
+  response:
     | {
         error: string;
         error_description: string;
@@ -51,7 +51,7 @@ const _openAndHandlePopup = async (url: string) => {
         return;
       }
 
-      const payload = e.data.payload;
+      const payload = e.data.response;
       if ("error" in payload) {
         return reject(new Error(payload.error));
       }
@@ -74,7 +74,7 @@ export const _signInWithPopup = async (
   client_id: string,
   scope: "firebase_auth",
 ) => {
-  const redirect_uri = "postmessage";
+  const redirect_uri = window.location.href;
   const code_verifier = _generateRandomString();
   const code_challenge = await _generateCodeChallenge(code_verifier);
   const url = _getAuthorizeUrl(

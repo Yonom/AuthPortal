@@ -2,6 +2,9 @@ import { FC } from "react";
 import firebaseIcon from "./firebase.svg";
 import authportalIcon from "./logo.svg";
 import Image from "next/image";
+import { AuthPortal } from "@authportal/firebase";
+import { getAuth } from "firebase/auth";
+import SignInButton from "./SignInButton";
 
 type WebsiteSectionProps = {
   className?: string;
@@ -130,13 +133,14 @@ const CodeExample = () => {
           <div className="border-t border-black"></div>
           <pre className="p-4">
             <code>
-              {`const authPortal = new AuthPortal({
-  domain: 'auth.yourapp.com',
-  clientId: 'your-client-id',
-  firebaseAuth: getAuth(app),
-});
-
-const signIn = () => authPortal.signInWithPopup();
+              {`const signIn = () => {
+  const authPortal = new AuthPortal({
+    domain: 'auth.yourapp.com',
+    client_id: 'your-client-id',
+    firebase_auth: getAuth(app),
+  });
+  authPortal.signInWithPopup();
+};
 return <button onClick={signIn}>Sign In</button>`}
             </code>
           </pre>
@@ -148,9 +152,7 @@ return <button onClick={signIn}>Sign In</button>`}
           </div>
           <div className="border-t border-black"></div>
           <div className="p-4">
-            <button className="rounded bg-blue-600 px-4 py-2 text-white">
-              Sign In
-            </button>
+            <SignInButton />
             <pre className="pt-4">^ Try it! :)</pre>
           </div>
         </div>

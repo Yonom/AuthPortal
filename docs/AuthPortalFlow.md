@@ -76,4 +76,4 @@ You can use the firebase-js-sdk to initialize firebase authentication with the d
 
 ## OAuth 2.0 Compatibility
 
-AuthPortal Flow is based on OAuth 2.0 Authorization Code Flow (as per RFC6749). It extends OAuth 2.0 by requiring a `scope=firebase_user` parameter, which returns a `firebase_user` object in the token response after successful authorization. PKCE (as per RFC7636) is mandatory. `iss` (as per RFC9207) is always returned.
+AuthPortal Flow is based on OAuth 2.0 Authorization Code Flow (as per RFC6749). It extends OAuth 2.0 by requiring a `scope=firebase_user` parameter, which returns a `firebase_user` object in the token response after successful authorization. PKCE (as per RFC7636) is mandatory. `iss` (as per RFC9207) is always returned. `response_mode=web_message` for sign-in via popup is supported.

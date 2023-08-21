@@ -79,9 +79,14 @@ export class AuthPortal {
       );
 
     const { client_id, domain, redirect_uri } = this._config;
+    if (!redirect_uri)
+      throw new Error(
+        "redirect_uri is required. You can set it in the constructor of AuthPortal.",
+      );
+
     return _signInWithRedirect(
-      client_id,
       domain,
+      client_id,
       redirect_uri,
       "firebase_auth",
       config?.return_to,
@@ -96,8 +101,8 @@ export class AuthPortal {
 
     const { client_id, domain, firebase_auth } = this._config;
     const { payload } = await _signInWithPopup(
-      client_id,
       domain,
+      client_id,
       "firebase_auth",
     );
     const user = await this._signInWithFirebasePayload(firebase_auth, payload);

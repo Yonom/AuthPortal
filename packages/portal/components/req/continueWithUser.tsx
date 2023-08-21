@@ -2,24 +2,7 @@ import { _FirebasePayload } from "@authportal/core/signIn/utils/portalApi";
 import { User } from "firebase/auth";
 import { getReq } from "./urlWithReq";
 
-const postRedirect = (url: string, data: Record<string, string>) => {
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = url;
-
-  for (const [name, value] of Object.entries(data)) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = name;
-    input.value = value;
-    form.appendChild(input);
-  }
-
-  document.body.appendChild(form);
-  form.submit();
-};
-
-type ContinuePostData = {
+type PutTokenRequestBody = {
   client_id: string;
   code_challenge: string;
   scope: "firebase_auth";
@@ -28,14 +11,61 @@ type ContinuePostData = {
   payload_json: string;
 };
 
-export const continueWithUser = async (user: User) => {
-  // TODO error handling
-  const req = await getReq();
+type PutTokenResponse = {
+  code: string;
+};
 
-  postRedirect("/oauth/continue", {
-    ...req.reqObj,
-    payload_json: JSON.stringify({
-      firebase_user: user.toJSON() as Record<string, unknown>,
-    } as _FirebasePayload),
-  } as ContinuePostData);
+const respond = (
+  response_mode: "web_message" | undefined,
+  redirect_uri: string,
+  code: string,
+  state: string | undefined,
+) => {
+  if (response_mode === "web_message") {
+    const targetOrigin = new URL(redirect_uri).origin;
+    const message = JSON.stringify({
+      type: "authorization_response",
+      response: {
+        code,
+        state,
+      },
+    });
+    window.parent.postMessage(message, { targetOrigin });
+  } else {
+    const redirectUrl = new URL(redirect_uri);
+    redirectUrl.searchParams.set("code", code);
+    if (state) {
+      redirectUrl.searchParams.set("state", state);
+    }
+    redirectUrl.searchParams.set("iss", window.location.origin);
+
+    // TODO history push or replace?
+    window.location.href = redirectUrl.href;
+  }
+};
+
+export const continueWithUser = async (user: User) => {
+  const { reqObj } = await getReq();
+
+  const res = await fetch("/oauth/token", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...reqObj,
+      payload_json: JSON.stringify({
+        firebase_user: user.toJSON() as Record<string, unknown>,
+      } as _FirebasePayload),
+    } as PutTokenRequestBody),
+  });
+
+  // TODO error handling
+  if (!res.ok) {
+    throw new Error("Failed to put token");
+  }
+
+  const { code } = (await res.json()) as PutTokenResponse;
+  const { response_mode, redirect_uri, state } = reqObj;
+  respond(response_mode, redirect_uri, code, state);
 };

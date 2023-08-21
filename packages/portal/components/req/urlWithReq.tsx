@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { AuthorizeParams, decryptReq, encryptReq } from "./reqEncryption";
+import { ReqParams, decryptReq, encryptReq } from "./reqEncryption";
 import { use } from "react";
 import { useNoSSR } from "./useNoSSR";
 import { cache } from "react";
 
-const AuthorizeSearchParams = AuthorizeParams.extend({
+const AuthorizeSearchParams = ReqParams.extend({
   response_type: z.literal("code"),
   code_challenge_method: z.literal("S256"),
 });
