@@ -11,6 +11,8 @@ const withAuthorization = (req: NextRequest) => {
   if (apiKey !== process.env.API_KEY) {
     return false;
   }
+
+  return true;
 };
 
 export async function POST(request: NextRequest) {
