@@ -83,6 +83,7 @@ export const _signInWithPopup = async (
     code_challenge,
     scope,
     redirect_uri,
+    "web_message",
   );
 
   const { code } = await _openAndHandlePopup(url.href);

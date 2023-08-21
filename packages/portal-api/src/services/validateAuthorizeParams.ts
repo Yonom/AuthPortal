@@ -20,7 +20,7 @@ const validateRedirectUri = (
   redirect_uri: string,
   allowed_redirect_uris: string[],
 ) => {
-  // for web_message (popup), onyl validate the origin
+  // for web_message (popup), only validate the origin
   if (response_mode === "web_message") {
     const redirect_origin = new URL(redirect_uri).origin;
     const allowed_redirect_origins = allowed_redirect_uris.map(

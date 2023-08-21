@@ -1,18 +1,7 @@
 import { _FirebasePayload } from "@authportal/core/signIn/utils/portalApi";
 import { User } from "firebase/auth";
 import { getReq } from "./urlWithReq";
-import { z } from "zod";
-import { ReqParams } from "./reqEncryption";
-
-export const PutTokenRequestBody = ReqParams.extend({
-  payload: z
-    .object({
-      firebase_user: z.record(z.unknown()),
-    })
-    .strict(),
-}).strict();
-
-export type PutTokenRequestBody = z.infer<typeof PutTokenRequestBody>;
+import { PutTokenRequestBody } from "./PutTokenRequestBody";
 
 type PutTokenResponse = {
   code: string;

@@ -1,5 +1,5 @@
 import { _generateRandomString } from "@authportal/core/signIn/utils/crypto";
-import { PutTokenRequestBody } from "@authportal/portal/components/req/continueWithUser";
+import { PutTokenRequestBody } from "@authportal/portal/components/req/PutTokenRequestBody";
 import { putPayload } from "../services/payload";
 import { getHostname } from "../services/hostname";
 import { validateAuthorizeParams } from "../services/validateAuthorizeParams";
