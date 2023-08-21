@@ -1,7 +1,7 @@
 import {
   _bytesToBase64UrlSafe,
   _base64UrlSafeToBytes,
-} from "@authportal/core/utils/crypto";
+} from "@authportal/core/signIn/utils/crypto";
 
 export async function aesGcmEncrypt(
   data: object,
