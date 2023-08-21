@@ -1,15 +1,18 @@
 import { _FirebasePayload } from "@authportal/core/signIn/utils/portalApi";
 import { User } from "firebase/auth";
 import { getReq } from "./urlWithReq";
+import { z } from "zod";
+import { ReqParams } from "./reqEncryption";
 
-type PutTokenRequestBody = {
-  client_id: string;
-  code_challenge: string;
-  scope: "firebase_auth";
-  redirect_uri: string;
-  state?: string;
-  payload_json: string;
-};
+export const PutTokenRequestBody = ReqParams.extend({
+  payload: z
+    .object({
+      firebase_user: z.record(z.unknown()),
+    })
+    .strict(),
+}).strict();
+
+export type PutTokenRequestBody = z.infer<typeof PutTokenRequestBody>;
 
 type PutTokenResponse = {
   code: string;
@@ -54,9 +57,9 @@ export const continueWithUser = async (user: User) => {
     },
     body: JSON.stringify({
       ...reqObj,
-      payload_json: JSON.stringify({
+      payload: {
         firebase_user: user.toJSON() as Record<string, unknown>,
-      } as _FirebasePayload),
+      },
     } as PutTokenRequestBody),
   });
 
