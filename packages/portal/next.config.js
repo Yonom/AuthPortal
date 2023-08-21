@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@authportal/core"],
+  transpilePackages: ["@authportal/*"],
   async redirects() {
     return [
       {

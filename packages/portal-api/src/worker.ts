@@ -1,6 +1,6 @@
 import { error, json, Router, createCors, IRequest } from "itty-router";
-import { postContinue } from "./oauth/continue";
-import { postToken } from "./oauth/token";
+import { putToken } from "./oauth/putToken";
+import { postToken } from "./oauth/postToken";
 import { getConfig } from "./api/config";
 
 const { preflight, corsify } = createCors({
@@ -21,9 +21,9 @@ const withAuthorization = (req: IRequest, env: Env) => {
 };
 
 const router = Router()
-  .post("/oauth/continue", postContinue)
   .all("/oauth/token", preflight)
   .post("/oauth/token", (req, env) => postToken(req, env).then(corsify))
+  .put("/oauth/token", putToken)
   .get("/api/config", withAuthorization, getConfig)
   .all("*", () => error(404));
 

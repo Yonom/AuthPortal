@@ -1,7 +1,7 @@
 import {
   _generateCodeChallenge,
   _generateRandomString,
-} from "@authportal/core/utils/crypto";
+} from "@authportal/core/signIn/utils/crypto";
 import { z } from "zod";
 import { getPayload } from "../services/payload";
 

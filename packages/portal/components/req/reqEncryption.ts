@@ -1,24 +1,23 @@
-import { _generateRandomString } from "@authportal/core/utils/crypto";
+import { _generateRandomString } from "@authportal/core/signIn/utils/crypto";
 import { aesGcmDecrypt, aesGcmEncrypt } from "./aesGcm";
 import { z } from "zod";
 import jsCookie from "js-cookie";
 
 const COOKIE_KEY = "authportal-key";
 
-export const AuthorizeParams = z.object({
+export const ReqParams = z.object({
   client_id: z.string(),
   code_challenge: z.string().length(43),
   scope: z.literal("firebase_auth"),
   redirect_uri: z.string().max(512),
   state: z.string().max(512).optional(),
+  response_mode: z.literal("web_message").optional(),
 });
 
-export type AuthorizeParams = z.infer<typeof AuthorizeParams>;
+export type ReqParams = z.infer<typeof ReqParams>;
 
-export const encryptReq = async (
-  unsafeParams: AuthorizeParams
-): Promise<string> => {
-  const params = AuthorizeParams.parse(unsafeParams);
+export const encryptReq = async (unsafeParams: ReqParams): Promise<string> => {
+  const params = ReqParams.parse(unsafeParams);
 
   let cookie = jsCookie.get(COOKIE_KEY);
   if (cookie == null) {
@@ -37,11 +36,11 @@ export const encryptReq = async (
   return req;
 };
 
-export const decryptReq = async (req: string): Promise<AuthorizeParams> => {
+export const decryptReq = async (req: string): Promise<ReqParams> => {
   const cookie = jsCookie.get(COOKIE_KEY);
   if (cookie == null) throw new Error("Invalid cookie");
 
   const unsafeParams = await aesGcmDecrypt(req, cookie);
 
-  return AuthorizeParams.parse(unsafeParams);
+  return ReqParams.parse(unsafeParams);
 };
