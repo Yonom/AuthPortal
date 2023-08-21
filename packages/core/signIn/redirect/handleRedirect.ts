@@ -1,8 +1,5 @@
-import { _AuthPortalFirebasePayload, _getToken } from "../utils/api";
-import {
-  _getRedirectConfig,
-  _removeRedirectConfig,
-} from "../utils/localStorage";
+import { _FirebasePayload, _getToken } from "../utils/portalApi";
+import { _getRedirectConfig, _removeRedirectConfig } from "./localStorage";
 
 const _getRedirectParams = (domain: string, current_url: string) => {
   const url = new URL(current_url);
@@ -13,10 +10,10 @@ const _getRedirectParams = (domain: string, current_url: string) => {
   return { code };
 };
 
-export const _handleAuthPortalRedirect = async (
+export const _handleRedirect = async (
   domain: string,
   client_id: string,
-  current_url: string
+  current_url: string,
 ) => {
   const redirectConfig = _getRedirectConfig(client_id);
   if (redirectConfig == null) throw new Error("Unexpected redirect");
@@ -29,7 +26,7 @@ export const _handleAuthPortalRedirect = async (
     client_id,
     redirectConfig.redirect_uri,
     redirectParams.code,
-    redirectConfig.code_verifier
+    redirectConfig.code_verifier,
   );
   _removeRedirectConfig(client_id);
   return { return_to: redirectConfig.return_to, payload };

@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@authportal/firebase"],
+  transpilePackages: ["@authportal/*"],
 };
 
 module.exports = nextConfig;

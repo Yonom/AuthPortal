@@ -1,13 +1,13 @@
 import {
   _generateCodeChallenge,
   _generateRandomString,
-} from "@authportal/core/utils/crypto";
-import type { _AuthPortalFirebasePayload } from "@authportal/core/utils/api";
+} from "@authportal/core/signIn/utils/crypto";
+import type { _FirebasePayload } from "@authportal/core/signIn/utils/portalApi";
 
 export type PayloadKVObject = {
   code_challenge: string;
   redirect_uri: string;
-  payload: _AuthPortalFirebasePayload;
+  payload: _FirebasePayload;
 };
 
 export const getPayload = async (
@@ -15,12 +15,12 @@ export const getPayload = async (
   client_id: string,
   redirect_uri: string,
   code: string,
-  code_verifier: string
+  code_verifier: string,
 ) => {
   const payloadKey = `${client_id}.${code}`;
   const payloadObject = await env.PAYLOAD.get<PayloadKVObject>(
     payloadKey,
-    "json"
+    "json",
   );
   if (payloadObject == null) return null;
   await env.PAYLOAD.delete(payloadKey);
@@ -38,7 +38,7 @@ export const putPayload = async (
   client_id: string,
   redirect_uri: string,
   code_challenge: string,
-  payload: _AuthPortalFirebasePayload
+  payload: _FirebasePayload,
 ) => {
   const code = _generateRandomString();
 
@@ -51,7 +51,7 @@ export const putPayload = async (
     }),
     {
       expirationTtl: 60 * 5, // 5 minutes
-    }
+    },
   );
 
   return code;

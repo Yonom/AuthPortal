@@ -1,4 +1,4 @@
-import { _AuthPortalFirebasePayload } from "@authportal/core/utils/api";
+import { _FirebasePayload } from "@authportal/core/signIn/utils/portalApi";
 import { User } from "firebase/auth";
 import { getReq } from "./urlWithReq";
 
@@ -36,6 +36,6 @@ export const continueWithUser = async (user: User) => {
     ...req.reqObj,
     payload_json: JSON.stringify({
       firebase_user: user.toJSON() as Record<string, unknown>,
-    } as _AuthPortalFirebasePayload),
+    } as _FirebasePayload),
   } as ContinuePostData);
 };
