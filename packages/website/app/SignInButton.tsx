@@ -12,7 +12,7 @@ const SignInButton = () => {
   const handleSignIn = () => {
     const authPortal = new AuthPortal({
       domain: "auth.authportal.dev",
-      client_id: "your-client-id",
+      client_id: process.env.NEXT_PUBLIC_AUTHPORTAL_CLIENT_ID as string,
       firebase_auth: getAuth(app),
     });
     authPortal.signInWithPopup();
