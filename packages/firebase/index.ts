@@ -20,7 +20,6 @@ export type AuthPortalRedirectResult = {
 };
 
 export type GetAuthPortalRedirectResultConfig = {
-  firebase_auth: Auth;
   current_url?: string;
 };
 
@@ -54,7 +53,7 @@ export class AuthPortal {
 
   async getRedirectResult({
     current_url,
-  }: GetAuthPortalRedirectResultConfig): Promise<AuthPortalRedirectResult> {
+  }: GetAuthPortalRedirectResultConfig = {}): Promise<AuthPortalRedirectResult> {
     if (typeof window === "undefined")
       throw new Error(
         "You tried to call authPortal.getRedirectResult method on the server. This is not supported.",

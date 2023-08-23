@@ -28,3 +28,6 @@ out/
 
 # production
 build
+
+# turbo
+.turbo
