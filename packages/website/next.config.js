@@ -5,6 +5,20 @@ const nextConfig = {
   experimental: {
     mdxRs: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/github",
+        destination: "https://github.com/Yonom/AuthPortal",
+        permanent: false,
+      },
+      {
+        source: "/discord",
+        destination: "https://discord.gg/EksDXX43SX",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 const withMDX = require("@next/mdx")();

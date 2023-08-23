@@ -38,20 +38,20 @@ export const Navbar = () => {
           </button>
         </div>
         <div className="block w-full flex-grow gap-3 lg:flex lg:w-auto lg:items-center">
-          {/* <div className="text-sm lg:flex-grow">
+          <div className="lg:flex-grow">
             <Link
-              href="https://docs.authportal.dev"
-              className="mr-4 mt-4 block hover:text-white  lg:mt-0 lg:inline-block"
+              href="https://docs.authportal.dev/"
+              className="mr-4 mt-4 block lg:mt-0 lg:inline-block"
             >
               Docs
             </Link>
-            <Link
+            {/* <Link
               href="/pricing"
               className="mr-4 mt-4 block hover:text-white  lg:mt-0 lg:inline-block"
             >
               Pricing
-            </Link>
-          </div> */}
+            </Link> */}
+          </div>
           {/* <div>
             <a
               href="#"
