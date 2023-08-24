@@ -1,0 +1,66 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "AuthPortal",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.png",
+  "colors": {
+    "primary": "#dc2626",
+    "light": "#ef4444",
+    "dark": "#0D001D",
+    "background": {
+      "dark": "#030712"
+    },
+    "anchors": {
+      "from": "#ef4444",
+      "to": "#b91c1c"
+    }
+  },
+  "modeToggle": {
+    "default": "dark",
+    "isHidden": true
+  },
+  "topbarLinks": [
+    {
+      "name": "Community",
+      "url": "https://authportal.dev/discord"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://dashboard.authportal.dev"
+  },
+  "anchors": [
+    {
+      "name": "Open Source",
+      "icon": "github",
+      "url": "https://authportal.dev/github"
+    },
+    {
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://authportal.dev/discord"
+    },
+    {
+      "name": "Support",
+      "icon": "envelope",
+      "url": "mailto:simon@authportal.dev"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Get Started",
+      "pages": ["introduction", "quickstart"]
+    },
+    {
+      "group": "Internals",
+      "pages": ["flow"]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://www.authportal.dev/github",
+    "discord": "https://www.authportal.dev/discord"
+  }
+}

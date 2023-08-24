@@ -1,30 +1,38 @@
-# Getting Started
+---
+title: "Quickstart"
+description: "Integrate AuthPortal in your app."
+---
+
+<Info>
+  Work in progress! AuthPortal is not ready for production use yet. Join our
+  Discord to receive support setting up AuthPortal, you will need it!
+</Info>
 
 ## Step 1. Sign up for a account
 
-Visit TODO and create an account.
+Visit the Dashboard to create an account and obtain your client ID and domain.
 
 ## Step 2. Install the client SDK
 
 Install the AuthPortal for Firebase SDK via your package manager:
 
+<CodeGroup>
+
+```bash yarn
+yarn add @authportal/firebase
 ```
+
+```bash npm
 npm install @authportal/firebase
 ```
 
-or
-
-```
-yarn add @authportal/firebase
-```
+</CodeGroup>
 
 ## Step 3. Initialize the library
 
 Create a new AuthPortal instance and export the result so you can use it in your app.
 
-`authPortal.js`
-
-```js
+```js authPortal.js
 import { AuthPortal } from "@authportal/firebase";
 
 export const authPortal = new AuthPortal({
@@ -40,8 +48,7 @@ Create a button somewhere on your site to call `authPortalsignInWithRedirect`:
 
 The implementation depends on your UI library, here's an example for React:
 
-`LoginButton.js`
-```jsx
+```jsx LoginButton.js
 import { authPortal } from "./authPortal";
 
 const LogInButton = () => {
@@ -53,9 +60,7 @@ const LogInButton = () => {
 
 Create a page under `/signin-authportal` (you can change the `redirect_path` to your liking). On this page, call `authPortal.getRedirectResult`:
 
-
-`pages/signin-authportal.js`
-```jsx
+```jsx pages/signin-authportal.js
 import { authPortal } from "./authPortal";
 
 // on page load:
