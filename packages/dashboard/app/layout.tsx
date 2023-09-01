@@ -3,6 +3,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Sidebar } from "./Sidebar";
+import { ThemeProvider } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +18,7 @@ type ContentWrapperProps = {
 
 const ContentWrapper: React.FC<ContentWrapperProps> = ({ children }) => {
   return (
-    <div className="flex h-full flex-row">
+    <div className="container flex h-full flex-col">
       <Sidebar />
       <div className="p-7">{children}</div>
     </div>
@@ -29,9 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html className="dark h-full" lang="en">
-      <body className={inter.className + " h-full"}>
-        <ContentWrapper>{children}</ContentWrapper>
+    <html className="h-full" lang="en">
+      <body className={cn(inter.className, "h-full")}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ContentWrapper>{children}</ContentWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );
