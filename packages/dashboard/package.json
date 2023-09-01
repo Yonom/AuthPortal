@@ -12,6 +12,7 @@
     "@authportal/firebase": "0.0.0",
     "@heroicons/react": "^2.0.18",
     "@radix-ui/react-icons": "^1.3.0",
+    "@radix-ui/react-slot": "^1.0.2",
     "@types/node": "20.5.1",
     "@types/react": "18.2.20",
     "@types/react-dom": "18.2.7",
