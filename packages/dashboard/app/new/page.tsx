@@ -13,8 +13,12 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
+import { auth, firestore } from "../firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import withAuth from "../withAuth";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -32,8 +36,38 @@ const NewPage = () => {
     },
   });
 
-  const onSubmit = (values: FormSchema) => {
-    console.log(values);
+  const addApp = async (name: string, userId: string) => {
+    const appsRef = collection(firestore, "apps");
+    const newAppRef = doc(appsRef);
+
+    await setDoc(newAppRef, {
+      id: newAppRef.id,
+      name,
+      members: [userId],
+    });
+    return newAppRef.id;
+  };
+
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (values: FormSchema) => {
+    const { name } = values;
+    const userId = auth.currentUser?.uid;
+
+    if (!userId) {
+      throw new Error("User not logged in");
+    }
+
+    setLoading(true);
+
+    try {
+      const newAppId = await addApp(name, userId);
+      router.push(`/apps/${newAppId}/setup`); // Redirect to the new app's config page
+    } catch (error) {
+      console.error("Error adding new app: ", error);
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,7 +76,7 @@ const NewPage = () => {
         Create a New App
       </h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="name"
@@ -60,11 +94,13 @@ const NewPage = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Create</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Creating..." : "Create"}
+          </Button>
         </form>
       </Form>
     </main>
   );
 };
 
-export default NewPage;
+export default withAuth(NewPage);

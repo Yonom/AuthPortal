@@ -12,11 +12,30 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
+import withAuth from "@/app/withAuth";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import { doc, setDoc } from "firebase/firestore";
+import { firestore } from "@/app/firebase";
+import { useEffect } from "react";
+
+const orderFields = <T extends Record<string, unknown>>(
+  obj: T,
+  fieldOrder: (keyof T)[],
+) => {
+  const newObj = {} as T;
+  for (const field of fieldOrder) {
+    if (field in obj) {
+      newObj[field] = obj[field];
+    }
+  }
+  for (const field of Object.keys(obj).filter((k) => !fieldOrder.includes(k))) {
+    (newObj[field] as any) = obj[field];
+  }
+  return newObj;
+};
 
 const FormSchema = z.object({
   config: z.string(),
@@ -24,7 +43,10 @@ const FormSchema = z.object({
 
 type FormSchema = z.infer<typeof FormSchema>;
 
-const NewPage = () => {
+const SetupPage = ({ params }: { params: { appId: string } }) => {
+  const ref = doc(firestore, "apps", params.appId);
+  const [app, loading] = useDocumentData(ref);
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -32,9 +54,46 @@ const NewPage = () => {
     },
   });
 
+  useEffect(() => {
+    if (!app?.firebaseConfig) {
+      form.setValue("config", "");
+      return;
+    }
+
+    const jsonToJsRegex = /(?<=^\s*)"([a-zA-Z]+)"(?=:)/gm;
+    const config = orderFields(app.firebaseConfig, [
+      "apiKey",
+      "authDomain",
+      "projectId",
+      "storageBucket", 
+      "messagingSenderId",
+      "appId",
+    ]);
+    const configJson = JSON.stringify(config, null, 2);
+    const configJs = configJson.replace(jsonToJsRegex, "$1");
+    form.setValue("config", `const firebaseConfig = ${configJs}`);
+  }, [form, app?.firebaseConfig]);
+
   const onSubmit = (values: FormSchema) => {
-    console.log(values);
+    try {
+      const regex = /firebaseConfig\s*=\s*(?<config>{(?:.|\s)+})/;
+      const configJs = regex.exec(values.config)?.groups?.config;
+      if (!configJs) throw new Error("Invalid config input");
+      const jsToJsonRegex = /(?<=^\s*)([a-zA-Z]+)(?=:)/gm;
+      const configJson = configJs?.replace(jsToJsonRegex, '"$1"');
+      const configObj = JSON.parse(configJson);
+
+      setDoc(
+        ref,
+        { firebaseConfig: configObj },
+        { mergeFields: ["firebaseConfig"] },
+      );
+    } catch (ex) {
+      alert(ex);
+    }
   };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <main>
@@ -77,4 +136,4 @@ const NewPage = () => {
   );
 };
 
-export default NewPage;
+export default withAuth(SetupPage);
