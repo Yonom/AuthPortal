@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { auth, firestore } from "./firebase";
-import { collection, query, where } from "firebase/firestore";
+import { auth, firestoreCollections } from "./firebase";
+import { query, where } from "firebase/firestore";
 import withAuth from "./withAuth";
 import { AppCard } from "./AppCard";
 
@@ -21,8 +21,8 @@ function Home() {
     !user
       ? null
       : query(
-          collection(firestore, "apps"),
-          where("members", "array-contains", user.uid),
+          firestoreCollections.apps,
+          where("admin_config.members", "array-contains", user.uid),
         ),
   );
 
@@ -37,14 +37,13 @@ function Home() {
           <AppCard
             key={v.id}
             appId={v.id}
-            name={v.data().name}
+            name={v.data().admin_config.name}
             type="development"
           />
         ))}
         {values?.docs.length === 0 && <p>No projects yet.</p>}
         {values == null && <p>Loading...</p>}
       </div>
-      {/* TODO list projects here */}
     </div>
   );
 }

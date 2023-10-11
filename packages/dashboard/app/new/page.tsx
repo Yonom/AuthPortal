@@ -14,11 +14,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { auth, firestore } from "../firebase";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { auth, firestoreCollections } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import withAuth from "../withAuth";
+import { _generateRandomString } from "@authportal/core/signIn/utils/crypto";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -37,14 +38,32 @@ const NewPage = () => {
   });
 
   const addApp = async (name: string, userId: string) => {
-    const appsRef = collection(firestore, "apps");
-    const newAppRef = doc(appsRef);
+    const newAppRef = doc(firestoreCollections.apps);
 
     await setDoc(newAppRef, {
-      id: newAppRef.id,
-      name,
-      members: [userId],
+      admin_config: {
+        name,
+        members: [userId],
+      },
+      clients: {
+        ["pk_" + _generateRandomString()]: {
+          redirect_uris: ["http://localhost:3000/signin-authportal"],
+        },
+      },
+      portal_config: {
+        firebase_config: {},
+        providers: [],
+      },
     });
+
+    const domainRef = doc(
+      firestoreCollections.domains,
+      newAppRef.id + ".authportal.site",
+    );
+    await setDoc(domainRef, {
+      appId: newAppRef.id,
+    });
+
     return newAppRef.id;
   };
 

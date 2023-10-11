@@ -18,8 +18,10 @@ import Link from "next/link";
 import withAuth from "@/app/withAuth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { doc, setDoc } from "firebase/firestore";
-import { firestore } from "@/app/firebase";
-import { useEffect } from "react";
+import { firestoreCollections } from "@/app/firebase";
+import { useEffect, useState } from "react";
+import { FirebaseError, deleteApp, initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const orderFields = <T extends Record<string, unknown>>(
   obj: T,
@@ -37,6 +39,34 @@ const orderFields = <T extends Record<string, unknown>>(
   return newObj;
 };
 
+const validateFirebaseConfig = async (config: Record<string, string>) => {
+  const app = initializeApp(config, "validate");
+  try {
+    const auth = getAuth(app);
+    await signInWithEmailAndPassword(
+      auth,
+      "authportal-test@example.com",
+      Math.random().toString(),
+    );
+  } catch (ex: unknown) {
+    if (!(ex instanceof FirebaseError)) throw ex;
+    const errorWhitelist = [
+      "auth/operation-not-allowed",
+      "auth/app-not-authorized",
+      "auth/user-disabled",
+      "auth/user-not-found",
+      "auth/wrong-password",
+    ];
+    if (errorWhitelist.includes(ex.code)) {
+      // OK
+    } else {
+      throw ex;
+    }
+  } finally {
+    deleteApp(app);
+  }
+};
+
 const FormSchema = z.object({
   config: z.string(),
 });
@@ -44,8 +74,8 @@ const FormSchema = z.object({
 type FormSchema = z.infer<typeof FormSchema>;
 
 const SetupPage = ({ params }: { params: { appId: string } }) => {
-  const ref = doc(firestore, "apps", params.appId);
-  const [app, loading] = useDocumentData(ref);
+  const ref = doc(firestoreCollections.apps, params.appId);
+  const [app, loadingApp] = useDocumentData(ref);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -55,26 +85,28 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
   });
 
   useEffect(() => {
-    if (!app?.firebaseConfig) {
+    const dbConfig = app?.portal_config.firebase_config;
+    if (!dbConfig || !Object.keys(dbConfig).length) {
       form.setValue("config", "");
       return;
     }
 
     const jsonToJsRegex = /(?<=^\s*)"([a-zA-Z]+)"(?=:)/gm;
-    const config = orderFields(app.firebaseConfig, [
+    const config = orderFields(dbConfig, [
       "apiKey",
       "authDomain",
       "projectId",
-      "storageBucket", 
+      "storageBucket",
       "messagingSenderId",
       "appId",
     ]);
     const configJson = JSON.stringify(config, null, 2);
     const configJs = configJson.replace(jsonToJsRegex, "$1");
     form.setValue("config", `const firebaseConfig = ${configJs}`);
-  }, [form, app?.firebaseConfig]);
+  }, [form, app?.portal_config.firebase_config]);
 
-  const onSubmit = (values: FormSchema) => {
+  const handleSubmit = async (values: FormSchema) => {
+    setIsBusy(true);
     try {
       const regex = /firebaseConfig\s*=\s*(?<config>{(?:.|\s)+})/;
       const configJs = regex.exec(values.config)?.groups?.config;
@@ -83,23 +115,27 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
       const configJson = configJs?.replace(jsToJsonRegex, '"$1"');
       const configObj = JSON.parse(configJson);
 
-      setDoc(
+      await validateFirebaseConfig(configObj);
+      await setDoc(
         ref,
-        { firebaseConfig: configObj },
-        { mergeFields: ["firebaseConfig"] },
+        { portal_config: { firebase_config: configObj } },
+        { mergeFields: ["portal_config.firebase_config"] },
       );
     } catch (ex) {
       alert(ex);
+    } finally {
+      setIsBusy(false);
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  const [isBusy, setIsBusy] = useState(false);
+  if (loadingApp) return <p>Loading...</p>;
 
   return (
     <main>
       <h2 className="mb-4 text-3xl font-bold tracking-tight">Setup</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="config"
@@ -129,7 +165,9 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
               </FormItem>
             )}
           />
-          <Button type="submit">Save</Button>
+          <Button disabled={isBusy} type="submit">
+            {isBusy ? "Saving..." : "Save"}
+          </Button>
         </form>
       </Form>
     </main>
