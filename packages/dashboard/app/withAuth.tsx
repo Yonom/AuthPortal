@@ -11,9 +11,9 @@ type WithAuthProps = {
 };
 
 const withAuth = <P extends object>(
-  Component: ComponentType<P>,
-): ComponentType<P & WithAuthProps> => {
-  const WithAuthComponent = (props: P & WithAuthProps) => {
+  Component: ComponentType<P & WithAuthProps>,
+): ComponentType<P> => {
+  const WithAuthComponent = (props: P) => {
     const [user, loading, error] = useAuthState(auth);
 
     if (loading) {

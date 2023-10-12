@@ -1,3 +1,5 @@
+import { Request } from "@cloudflare/workers-types";
+
 export const getHostname = (req: Request) => {
   const forwardedHost = req.headers.get("X-Forwarded-Host");
   if (forwardedHost) {

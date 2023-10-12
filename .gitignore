@@ -33,3 +33,4 @@ build
 .turbo
 
 functions/lib
+firebase-debug.log*

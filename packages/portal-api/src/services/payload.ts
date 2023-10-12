@@ -3,6 +3,7 @@ import {
   _generateRandomString,
 } from "@authportal/core/signIn/utils/crypto";
 import type { _FirebasePayload } from "@authportal/core/signIn/utils/portalApi";
+import { Env } from "../types";
 
 export type PayloadKVObject = {
   code_challenge: string;

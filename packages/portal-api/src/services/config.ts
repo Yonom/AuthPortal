@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Env } from "../types";
 
 export const PortalConfig = z.object({
   firebase_config: z.record(z.string()),

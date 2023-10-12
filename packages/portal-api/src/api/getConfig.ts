@@ -1,6 +1,8 @@
 import { IRequest } from "itty-router";
 import { z } from "zod";
 import { getConfigFromKV } from "../services/config";
+import { Env } from "../types";
+import { Response } from "@cloudflare/workers-types";
 
 const ConfigParams = z
   .object({

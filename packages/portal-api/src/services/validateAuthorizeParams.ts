@@ -1,5 +1,6 @@
 import { ReqParams } from "@authportal/portal/components/req/reqEncryption";
 import { getConfigFromKV } from "./config";
+import { Env } from "../types";
 
 const _isRedirectUriMatch = (
   redirect_uri: string,
