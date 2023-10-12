@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -11,19 +10,20 @@ const LoginPage = ({
 }: {
   searchParams: { screen_hint: string };
 }) => {
-  const [user, loading, error] = useAuthState(auth);
   const router = useRouter();
   useEffect(() => {
-    if (!loading && !error) return;
-    if (user) {
-      router.push("/");
-    } else {
-      authportal.signInWithRedirect({
-        screen_hint:
-          searchParams.screen_hint === "signup" ? "signup" : undefined,
-      });
-    }
-  }, [error, loading, user, router, searchParams.screen_hint]);
+    auth.authStateReady().then(() => {
+      const user = auth.currentUser;
+      if (user) {
+        router.push("/");
+      } else {
+        authportal.signInWithRedirect({
+          screen_hint:
+            searchParams.screen_hint === "signup" ? "signup" : undefined,
+        });
+      }
+    });
+  }, [router, searchParams.screen_hint]);
 
   return <p>Loading...</p>;
 };
