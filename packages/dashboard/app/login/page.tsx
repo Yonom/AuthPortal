@@ -14,7 +14,8 @@ const LoginPage = ({
   const [user, loading, error] = useAuthState(auth);
   const router = useRouter();
   useEffect(() => {
-    if (!loading && !error && user) {
+    if (!loading && !error) return;
+    if (user) {
       router.push("/");
     } else {
       authportal.signInWithRedirect({
@@ -22,7 +23,7 @@ const LoginPage = ({
           searchParams.screen_hint === "signup" ? "signup" : undefined,
       });
     }
-  });
+  }, [error, loading, user, router, searchParams.screen_hint]);
 
   return <p>Loading...</p>;
 };
