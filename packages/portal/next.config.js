@@ -5,11 +5,13 @@ const nextConfig = {
     return [
       {
         source: "/authorize",
-        has: {
-          type: "query",
-          key: "screen_hint",
-          value: "signup",
-        },
+        has: [
+          {
+            type: "query",
+            key: "screen_hint",
+            value: "signup",
+          },
+        ],
         destination: "/sign-up",
         permanent: false,
       },
