@@ -7,7 +7,12 @@ const ConfigParams = ConfigKVObject.extend({
 }).strict();
 
 export const putConfig = async (req: IRequest, env: Env) => {
-  const { domains, ...newConfig } = ConfigParams.parse(req.query);
+  const body = await req.json();
+  const contentObj = ConfigParams.safeParse(body);
+  if (!contentObj.success)
+    return Response.json({ error: "invalid_request" }, { status: 400 });
+
+  const { domains, ...newConfig } = contentObj.data;
   for (const domain of domains) {
     await putConfigInKV(env, domain, newConfig);
   }

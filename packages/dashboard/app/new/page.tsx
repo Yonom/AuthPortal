@@ -46,8 +46,8 @@ const NewPage = () => {
         members: [userId],
       },
       clients: {
-        ["pk_" + _generateRandomString()]: {
-          redirect_uris: ["http://localhost:3000/signin-authportal"],
+        ["pk_" + _generateRandomString().substring(0, 24)]: {
+          redirect_uris: ["http://localhost/signin-authportal"],
         },
       },
       portal_config: {
@@ -58,7 +58,8 @@ const NewPage = () => {
 
     const domainRef = doc(
       firestoreCollections.domains,
-      newAppRef.id + ".authportal.site",
+      _generateRandomString().substring(0, 16).toLowerCase() +
+        ".authportal.site",
     );
     await setDoc(domainRef, {
       appId: newAppRef.id,

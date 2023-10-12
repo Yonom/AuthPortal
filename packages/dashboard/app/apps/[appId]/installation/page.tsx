@@ -2,8 +2,8 @@
 
 import * as z from "zod";
 import withAuth from "@/app/withAuth";
-import { useDocumentData } from "react-firebase-hooks/firestore";
-import { doc } from "firebase/firestore";
+import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
+import { doc, limit, query, where } from "firebase/firestore";
 import { firestoreCollections } from "@/app/firebase";
 import { FC } from "react";
 
@@ -20,9 +20,15 @@ const CodeBlock: FC<CodeBlockParams> = ({ children }) => {
 };
 
 const InstallationPage = ({ params }: { params: { appId: string } }) => {
-  const ref = doc(firestoreCollections.apps, params.appId);
-  const [app] = useDocumentData(ref);
-  if (!app) return <p>Loading...</p>;
+  const appRef = doc(firestoreCollections.apps, params.appId);
+  const domainRef = query(
+    firestoreCollections.domains,
+    where("appId", "==", params.appId),
+    limit(1),
+  );
+  const [app] = useDocumentData(appRef);
+  const [domains] = useCollection(domainRef);
+  if (!app || !domains) return <p>Loading...</p>;
 
   return (
     <main>
@@ -33,7 +39,7 @@ const InstallationPage = ({ params }: { params: { appId: string } }) => {
       <CodeBlock>{`import { AuthPortal } from '@authportal/firebase';
 
 const authportal = new AuthPortal({
-  domain: '${params.appId}.authportal.site',
+  domain: '${domains.docs[0]?.id}',
   client_id: '${Object.keys(app.clients)[0]}',
   firebase_auth: getAuth(app),
 });`}</CodeBlock>
