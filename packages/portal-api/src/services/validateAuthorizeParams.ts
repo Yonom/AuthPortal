@@ -1,5 +1,5 @@
 import { ReqParams } from "@authportal/portal/components/req/reqEncryption";
-import { getConfig } from "./config";
+import { getConfigFromKV } from "./config";
 
 const _isRedirectUriMatch = (
   redirect_uri: string,
@@ -37,7 +37,7 @@ export const validateAuthorizeParams = async (
   domain: string,
   params: ReqParams,
 ) => {
-  const config = await getConfig(env, domain);
+  const config = await getConfigFromKV(env, domain);
 
   const { client_id, redirect_uri, response_mode } = params;
 

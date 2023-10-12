@@ -38,6 +38,11 @@ export class AuthPortal {
   private readonly _config: _AuthPortalConfig;
   constructor(config: AuthPortalInitConfig) {
     this._config = _normalizeConfig<_FirebaseConfig>(config);
+
+    // bind methods
+    this.getRedirectResult = this.getRedirectResult.bind(this);
+    this.signInWithRedirect = this.signInWithRedirect.bind(this);
+    this.signInWithPopup = this.signInWithPopup.bind(this);
   }
 
   private async _signInWithFirebasePayload(
