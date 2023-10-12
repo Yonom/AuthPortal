@@ -8,7 +8,8 @@ export const _getAuthorizeUrl = (
   code_challenge: string,
   scope: "firebase_auth",
   redirect_uri: string,
-  response_mode?: "web_message",
+  screen_hint: "signup" | undefined,
+  response_mode?: "web_message" | undefined,
 ) => {
   const url = new URL(`https://${domain}/authorize`);
   url.searchParams.set("response_type", "code");
@@ -17,6 +18,10 @@ export const _getAuthorizeUrl = (
   url.searchParams.set("code_challenge_method", "S256");
   url.searchParams.set("scope", scope);
   url.searchParams.set("redirect_uri", redirect_uri);
+
+  if (screen_hint != null) {
+    url.searchParams.set("screen_hint", screen_hint);
+  }
 
   if (response_mode != null) {
     url.searchParams.set("response_mode", response_mode);

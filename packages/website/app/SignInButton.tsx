@@ -16,7 +16,7 @@ const SignInButton = () => {
   const [user, setUser] = useState<User | null>(null);
   const handleSignIn = async () => {
     const authPortal = new AuthPortal({
-      domain: "auth.authportal.dev",
+      domain: process.env.NEXT_PUBLIC_AUTHPORTAL_DOMAIN as string,
       client_id: process.env.NEXT_PUBLIC_AUTHPORTAL_CLIENT_ID as string,
       firebase_auth: auth,
     });

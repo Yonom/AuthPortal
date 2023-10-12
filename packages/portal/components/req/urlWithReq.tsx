@@ -7,6 +7,7 @@ import { cache } from "react";
 const AuthorizeSearchParams = ReqParams.extend({
   response_type: z.literal("code"),
   code_challenge_method: z.literal("S256"),
+  screen_hint: z.literal("signup").optional(),
 });
 
 export const getReq = cache(async () => {

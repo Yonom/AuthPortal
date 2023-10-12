@@ -12,7 +12,8 @@ export const _signInWithRedirect = async (
   client_id: string,
   redirect_uri: string,
   scope: "firebase_auth",
-  return_to?: string,
+  screen_hint: "signup" | undefined,
+  return_to: string | undefined,
 ) => {
   const code_verifier = _generateRandomString();
   _setRedirectConfig(client_id, {
@@ -29,6 +30,7 @@ export const _signInWithRedirect = async (
     code_challenge,
     scope,
     redirect_uri,
+    screen_hint,
   );
 
   // redirect to authportal

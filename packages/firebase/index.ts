@@ -24,6 +24,7 @@ export type GetAuthPortalRedirectResultConfig = {
 };
 
 export type SignInWithAuthPortalConfig = {
+  screen_hint?: "signup";
   return_to?: string;
 };
 
@@ -76,6 +77,7 @@ export class AuthPortal {
   }
 
   async signInWithRedirect(): Promise<void>;
+  async signInWithRedirect(config: SignInWithAuthPortalConfig): Promise<void>;
   async signInWithRedirect(config?: SignInWithAuthPortalConfig): Promise<void> {
     if (typeof window === "undefined")
       throw new Error(
@@ -93,6 +95,7 @@ export class AuthPortal {
       client_id,
       redirect_uri,
       "firebase_auth",
+      config?.screen_hint,
       config?.return_to,
     );
   }

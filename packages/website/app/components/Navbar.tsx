@@ -41,7 +41,7 @@ export const Navbar = () => {
           <div className="lg:flex-grow">
             <Link
               href="https://docs.authportal.dev/"
-              className="mr-4 mt-4 block lg:mt-0 lg:inline-block"
+              className="mr-4 mt-4 block lg:mt-0 lg:inline-block" 
             >
               Docs
             </Link>
@@ -52,22 +52,22 @@ export const Navbar = () => {
               Pricing
             </Link> */}
           </div>
-          {/* <div>
-            <a
-              href="#"
+          <div>
+            <Link
+              href="https://dashboard.authportal.dev/"
               className="mt-4 inline-block rounded border px-4 py-2 text-sm   leading-none lg:mt-0"
             >
               Sign In
-            </a>
+            </Link>
           </div>
           <div>
-            <a
-              href="#"
+            <Link
+              href="https://dashboard.authportal.dev/login?screen_hint=signup"
               className="mt-4 inline-block rounded border bg-black px-4 py-2 text-sm leading-none text-white lg:mt-0"
             >
               Sign Up
-            </a>
-          </div> */}
+            </Link>
+          </div>
         </div>
       </nav>
     </WebsiteSection>
