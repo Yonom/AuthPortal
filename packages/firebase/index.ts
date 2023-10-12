@@ -23,7 +23,11 @@ export type GetAuthPortalRedirectResultConfig = {
   current_url?: string;
 };
 
-export type SignInWithAuthPortalConfig = {
+export type SignInWithPopupConfig = {
+  screen_hint?: "signup";
+};
+
+export type SignInWithRedirectConfig = {
   screen_hint?: "signup";
   return_to?: string;
 };
@@ -77,8 +81,8 @@ export class AuthPortal {
   }
 
   async signInWithRedirect(): Promise<void>;
-  async signInWithRedirect(config: SignInWithAuthPortalConfig): Promise<void>;
-  async signInWithRedirect(config?: SignInWithAuthPortalConfig): Promise<void> {
+  async signInWithRedirect(config: SignInWithRedirectConfig): Promise<void>;
+  async signInWithRedirect(config?: SignInWithRedirectConfig): Promise<void> {
     if (typeof window === "undefined")
       throw new Error(
         "You tried to call authPortal.signInWithRedirect method on the server. This is not supported.",
@@ -100,7 +104,13 @@ export class AuthPortal {
     );
   }
 
-  async signInWithPopup(): Promise<AuthPortalPopupResult> {
+  async signInWithPopup(): Promise<AuthPortalPopupResult>;
+  async signInWithPopup(
+    config: SignInWithPopupConfig,
+  ): Promise<AuthPortalPopupResult>;
+  async signInWithPopup(
+    config?: SignInWithPopupConfig,
+  ): Promise<AuthPortalPopupResult> {
     if (typeof window === "undefined")
       throw new Error(
         "You tried to call authPortal.signInWithRedirect method on the server. This is not supported.",
@@ -111,6 +121,7 @@ export class AuthPortal {
       domain,
       client_id,
       "firebase_auth",
+      config?.screen_hint,
     );
     const user = await this._signInWithFirebasePayload(firebase_auth, payload);
     return { user };

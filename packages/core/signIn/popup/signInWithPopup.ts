@@ -73,6 +73,7 @@ export const _signInWithPopup = async (
   domain: string,
   client_id: string,
   scope: "firebase_auth",
+  screen_hint: "signup" | undefined,
 ) => {
   const redirect_uri = window.location.href;
   const code_verifier = _generateRandomString();
@@ -83,6 +84,7 @@ export const _signInWithPopup = async (
     code_challenge,
     scope,
     redirect_uri,
+    screen_hint,
     "web_message",
   );
 
