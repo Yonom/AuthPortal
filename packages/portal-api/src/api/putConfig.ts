@@ -2,7 +2,6 @@ import { IRequest } from "itty-router";
 import { z } from "zod";
 import { ConfigKVObject, putConfigInKV } from "../services/config";
 import { Env } from "../types";
-import { Response } from "@cloudflare/workers-types";
 
 const ConfigParams = ConfigKVObject.extend({
   domains: z.string().array(),

@@ -4,6 +4,7 @@ import {
 } from "@authportal/core/signIn/utils/crypto";
 import { z } from "zod";
 import { getPayload } from "../services/payload";
+import { Env } from "../types";
 
 const PostTokenContent = z
   .object({
@@ -26,7 +27,7 @@ export const postToken = async (req: Request, env: Env) => {
     client_id,
     redirect_uri,
     code,
-    code_verifier
+    code_verifier,
   );
   if (payload == null)
     return Response.json({ error: "not_found" }, { status: 404 });
@@ -42,6 +43,6 @@ export const postToken = async (req: Request, env: Env) => {
         "Cache-Control": "no-store",
         Pragma: "no-cache",
       },
-    }
+    },
   );
 };

@@ -3,6 +3,7 @@ import { PutTokenRequestBody } from "@authportal/portal/components/req/PutTokenR
 import { putPayload } from "../services/payload";
 import { getHostname } from "../services/hostname";
 import { validateAuthorizeParams } from "../services/validateAuthorizeParams";
+import { Env } from "../types";
 
 export const putToken = async (req: Request, env: Env) => {
   const domain = getHostname(req);
