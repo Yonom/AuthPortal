@@ -34,3 +34,5 @@ build
 
 functions/lib
 firebase-debug.log*
+
+dist/

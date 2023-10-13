@@ -1,4 +1,10 @@
 {
   "name": "@authportal/core",
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "scripts": {
+    "predeploy": "npm run build && cd dist",
+    "deploy": "cd dist && npm pack && npm publish --access public",
+    "build": "tsc",
+    "postbuild": "cp package.json dist/package.json"
+  }
 }

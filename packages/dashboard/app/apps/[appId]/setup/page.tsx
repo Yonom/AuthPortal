@@ -56,6 +56,7 @@ const validateFirebaseConfig = async (config: Record<string, string>) => {
       "auth/user-disabled",
       "auth/user-not-found",
       "auth/wrong-password",
+      "auth/invalid-login-credentials",
     ];
     if (errorWhitelist.includes(ex.code)) {
       // OK
