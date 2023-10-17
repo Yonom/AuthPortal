@@ -1,10 +1,10 @@
 "use client";
 
 import * as z from "zod";
-import withAuth from "@/app/withAuth";
+import withAuth from "@/lib/withAuth";
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
 import { doc, limit, query, where } from "firebase/firestore";
-import { firestoreCollections } from "@/app/firebase";
+import { firestoreCollections } from "@/lib/firebase";
 import { FC } from "react";
 
 type CodeBlockParams = {
@@ -23,7 +23,7 @@ const InstallationPage = ({ params }: { params: { appId: string } }) => {
   const appRef = doc(firestoreCollections.apps, params.appId);
   const domainRef = query(
     firestoreCollections.domains,
-    where("appId", "==", params.appId),
+    where("app_id", "==", params.appId),
     limit(1),
   );
   const [app] = useDocumentData(appRef);

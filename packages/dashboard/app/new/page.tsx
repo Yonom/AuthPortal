@@ -14,11 +14,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { auth, firestoreCollections } from "../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { auth, firestoreCollections } from "../../lib/firebase";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import withAuth from "../withAuth";
+import withAuth from "../../lib/withAuth";
 import { _generateRandomString } from "@authportal/core/signIn/utils/crypto";
 
 const FormSchema = z.object({
@@ -54,6 +54,8 @@ const NewPage = () => {
         firebase_config: {},
         providers: [],
       },
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
     });
 
     const domainRef = doc(
@@ -62,7 +64,9 @@ const NewPage = () => {
         ".authportal.site",
     );
     await setDoc(domainRef, {
-      appId: newAppRef.id,
+      app_id: newAppRef.id,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
     });
 
     return newAppRef.id;

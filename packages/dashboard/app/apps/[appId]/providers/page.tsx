@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import withAuth from "@/app/withAuth";
+import withAuth from "@/lib/withAuth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import { doc, setDoc } from "firebase/firestore";
-import { firestoreCollections } from "@/app/firebase";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { firestoreCollections } from "@/lib/firebase";
 import { useEffect, useState } from "react";
 import {
   EmailAuthProvider,
@@ -59,7 +59,11 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
     setIsBusy(true);
     try {
       const providers = values.providerIds.map((p) => ({ provider_id: p }));
-      await setDoc(ref, { portal_config: { providers } }, { merge: true });
+      await setDoc(
+        ref,
+        { portal_config: { providers }, updated_at: serverTimestamp() },
+        { merge: true },
+      );
     } catch (ex: unknown) {
       console.error(ex);
     } finally {

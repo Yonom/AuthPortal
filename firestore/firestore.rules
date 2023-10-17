@@ -1,0 +1,68 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	function verifyTimestamp(createdAt) {
+    	return createdAt == request.time;
+    }
+    
+    function verifyFields(required, optional) {
+      let allAllowedFields = required.concat(optional);
+      return request.resource.data.keys().hasAll(required) &&
+        request.resource.data.keys().hasOnly(allAllowedFields);
+    }
+  
+    match /apps/{app_id} {
+      function hasAccessToApp() {
+        return request.auth != null &&
+          (
+            (request.method != 'create' && request.method != 'update') ||
+            request.auth.uid in request.resource.data.admin_config.members
+          ) &&
+          (
+            request.method == 'create' ||
+            request.auth.uid in resource.data.admin_config.members
+          )
+      }
+      
+      function validateAppObject() {
+      	return verifyFields(["admin_config", "portal_config", "clients", "created_at", "updated_at"], []) &&
+        	verifyTimestamp(request.resource.data.updated_at)
+      }
+      
+      allow create:
+        if hasAccessToApp() &&
+          validateAppObject() &&
+          verifyTimestamp(request.resource.data.created_at)
+      
+      allow update:
+        if hasAccessToApp() &&
+          validateAppObject()
+        	
+    	
+      allow read, delete:
+        if hasAccessToApp()
+    }
+    
+    match /domains/{domain} {
+      function isDomain() {
+        return domain.matches("^(?:[a-z0-9](?:[a-z0-9-]{0,60}[a-z0-9])?\\.){1,5}(?:[a-z][a-z0-9-]{0,60}[a-z0-9])$")
+      }
+
+      function hasAccessToApp(app_id) {
+        return request.auth != null && 
+          request.auth.uid in get(/databases/$(database)/documents/apps/$(app_id)).data.admin_config.members
+      }
+      
+      allow create:
+        if isDomain() &&
+          verifyFields(["app_id", "created_at", "updated_at"], []) &&
+          verifyTimestamp(request.resource.data.created_at) &&
+        	verifyTimestamp(request.resource.data.updated_at) &&
+          hasAccessToApp(request.resource.data.app_id)
+      
+      allow delete, read: 
+        if hasAccessToApp(resource.data.app_id);
+    }
+  }
+}

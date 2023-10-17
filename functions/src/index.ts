@@ -8,7 +8,7 @@ setGlobalOptions({ maxInstances: 10 });
 initializeApp();
 
 export const syncAppsToCloudflare = onDocumentWritten(
-  "apps/{appId}",
+  "apps/{app_id}",
   async (request) => {
     const { API_KEY } = process.env;
     if (!API_KEY) {
@@ -21,7 +21,7 @@ export const syncAppsToCloudflare = onDocumentWritten(
     const { portal_config, clients } = data;
     const domainSnapshots = await getFirestore()
       .collection("domains")
-      .where("appId", "==", request.params.appId)
+      .where("app_id", "==", request.params.app_id)
       .get();
     const domains = domainSnapshots.docs.map((d) => d.id);
     const payload = {

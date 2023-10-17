@@ -4,10 +4,19 @@ import { ComponentType } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./firebase";
 import { authportal } from "./authportal";
-import { User } from "firebase/auth";
+import { User, signOut } from "firebase/auth";
 
 type WithAuthProps = {
   user?: User | null;
+};
+
+let redirecting = false;
+const logoutRedirectUrl = "https://www.authportal.dev";
+export const logout = async () => {
+  redirecting = true;
+
+  await signOut(auth);
+  window.location.href = logoutRedirectUrl;
 };
 
 const withAuth = <P extends object>(
@@ -16,13 +25,13 @@ const withAuth = <P extends object>(
   const WithAuthComponent = (props: P) => {
     const [user, loading, error] = useAuthState(auth);
 
-    if (loading) {
+    if (loading || redirecting) {
       // Render a loading spinner or something similar
       return <div>Loading...</div>;
     }
 
     if (error || !user) {
-      // Redirect to the login page if there's an error or the user is not logged in
+      // Redirect to the login page if there's an error or the user is not logged in)
       authportal.signInWithRedirect();
       return null;
     }

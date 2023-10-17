@@ -6,6 +6,7 @@ import {
   QueryDocumentSnapshot,
   collection,
   WithFieldValue,
+  Timestamp,
 } from "firebase/firestore";
 
 export const firebaseConfig = JSON.parse(
@@ -29,10 +30,14 @@ type FirestoreAppDocument = ConfigKVObject & {
     name: string;
     members: string[];
   };
+  created_at: Timestamp;
+  updated_at: Timestamp;
 };
 
 type FirestoreDomainDocument = {
-  appId: string;
+  app_id: string;
+  created_at: Timestamp;
+  updated_at: Timestamp;
 };
 
 const firestoreCollections = {

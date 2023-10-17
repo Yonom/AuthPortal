@@ -1,9 +1,9 @@
 "use client";
 
-import { auth } from "../firebase";
+import { auth } from "../../lib/firebase";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { authportal } from "../authportal";
+import { authportal } from "../../lib/authportal";
 
 const LoginPage = ({
   searchParams,

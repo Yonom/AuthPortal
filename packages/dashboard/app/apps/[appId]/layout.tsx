@@ -3,7 +3,7 @@
 import { Separator } from "@/components/ui/separator";
 import ConfigNav from "./ConfigNav";
 import { FC } from "react";
-import { firestore, firestoreCollections } from "@/app/firebase";
+import { firestore, firestoreCollections } from "@/lib/firebase";
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 

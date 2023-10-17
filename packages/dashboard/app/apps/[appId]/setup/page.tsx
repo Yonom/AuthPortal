@@ -15,10 +15,10 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import withAuth from "@/app/withAuth";
+import withAuth from "@/lib/withAuth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import { doc, setDoc } from "firebase/firestore";
-import { firestoreCollections } from "@/app/firebase";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { firestoreCollections } from "@/lib/firebase";
 import { useEffect, useState } from "react";
 import { FirebaseError, deleteApp, initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -119,8 +119,11 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
       await validateFirebaseConfig(configObj);
       await setDoc(
         ref,
-        { portal_config: { firebase_config: configObj } },
-        { mergeFields: ["portal_config.firebase_config"] },
+        {
+          portal_config: { firebase_config: configObj },
+          updated_at: serverTimestamp(),
+        },
+        { mergeFields: ["portal_config.firebase_config", "updated_at"] },
       );
     } catch (ex) {
       alert(ex);

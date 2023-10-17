@@ -2,7 +2,7 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Sidebar } from "./Sidebar";
+import { Navbar } from "./Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +19,7 @@ type ContentWrapperProps = {
 const ContentWrapper: React.FC<ContentWrapperProps> = ({ children }) => {
   return (
     <div className="container flex h-full flex-col">
-      <Sidebar />
+      <Navbar />
       <div className="p-7">{children}</div>
     </div>
   );

@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { auth, firestoreCollections } from "./firebase";
+import { auth, firestoreCollections } from "../lib/firebase";
 import { query, where } from "firebase/firestore";
-import withAuth from "./withAuth";
+import withAuth from "../lib/withAuth";
 import { AppCard } from "./AppCard";
 
 function Home() {
