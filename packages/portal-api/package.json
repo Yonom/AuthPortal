@@ -7,8 +7,8 @@
     "start": "wrangler dev"
   },
   "dependencies": {
-    "@authportal/core": "0.0.0",
-    "@authportal/portal": "0.0.0",
+    "workspace:@authportal/core": "*",
+    "workspace:@authportal/portal": "*",
     "cookie": "^0.5.0",
     "itty-router": "^4.0.23",
     "zod": "^3.22.4"

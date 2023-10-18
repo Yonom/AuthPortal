@@ -11,9 +11,14 @@ service cloud.firestore {
       return request.resource.data.keys().hasAll(required) &&
         request.resource.data.keys().hasOnly(allAllowedFields);
     }
+
+    function hasAccessToApp(app_id) {
+      return request.auth != null && 
+        request.auth.uid in get(/databases/$(database)/documents/apps/$(app_id)).data.admin_config.members
+    }
   
     match /apps/{app_id} {
-      function hasAccessToApp() {
+      function hasAccessToAppLocal() {
         return request.auth != null &&
           (
             (request.method != 'create' && request.method != 'update') ||
@@ -31,27 +36,28 @@ service cloud.firestore {
       }
       
       allow create:
-        if hasAccessToApp() &&
+        if hasAccessToAppLocal() &&
           validateAppObject() &&
           verifyTimestamp(request.resource.data.created_at)
       
       allow update:
-        if hasAccessToApp() &&
+        if hasAccessToAppLocal() &&
           validateAppObject()
         	
     	
       allow read, delete:
-        if hasAccessToApp()
+        if hasAccessToAppLocal()
+
+      // allow reading /metadata/doctor_report for admin config members
+      match /metadata/doctor_report {
+        allow read:
+          if hasAccessToApp(app_id)
+      }
     }
     
     match /domains/{domain} {
       function isDomain() {
         return domain.matches("^(?:[a-z0-9](?:[a-z0-9-]{0,60}[a-z0-9])?\\.){1,5}(?:[a-z][a-z0-9-]{0,60}[a-z0-9])$")
-      }
-
-      function hasAccessToApp(app_id) {
-        return request.auth != null && 
-          request.auth.uid in get(/databases/$(database)/documents/apps/$(app_id)).data.admin_config.members
       }
       
       allow create:

@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@authportal/firebase": "0.0.0",
-    "@authportal/portal-api": "0.0.0",
+    "workspace:@authportal/firebase": "*",
+    "workspace:@authportal/portal-api": "*",
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.3.1",
     "@radix-ui/react-checkbox": "^1.0.4",
