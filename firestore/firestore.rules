@@ -48,7 +48,6 @@ service cloud.firestore {
       allow read, delete:
         if hasAccessToAppLocal()
 
-      // allow reading /metadata/doctor_report for admin config members
       match /metadata/doctor_report {
         allow read:
           if hasAccessToApp(app_id)

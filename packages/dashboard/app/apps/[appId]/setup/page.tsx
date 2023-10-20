@@ -39,35 +39,6 @@ const orderFields = <T extends Record<string, unknown>>(
   return newObj;
 };
 
-const validateFirebaseConfig = async (config: Record<string, string>) => {
-  const app = initializeApp(config, "validate");
-  try {
-    const auth = getAuth(app);
-    await signInWithEmailAndPassword(
-      auth,
-      "authportal-test@example.com",
-      Math.random().toString(),
-    );
-  } catch (ex: unknown) {
-    if (!(ex instanceof FirebaseError)) throw ex;
-    const errorWhitelist = [
-      "auth/operation-not-allowed",
-      "auth/app-not-authorized",
-      "auth/user-disabled",
-      "auth/user-not-found",
-      "auth/wrong-password",
-      "auth/invalid-login-credentials",
-    ];
-    if (errorWhitelist.includes(ex.code)) {
-      // OK
-    } else {
-      throw ex;
-    }
-  } finally {
-    deleteApp(app);
-  }
-};
-
 const FormSchema = z.object({
   config: z.string(),
 });
@@ -116,7 +87,6 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
       const configJson = configJs?.replace(jsToJsonRegex, '"$1"');
       const configObj = JSON.parse(configJson);
 
-      await validateFirebaseConfig(configObj);
       await setDoc(
         ref,
         {

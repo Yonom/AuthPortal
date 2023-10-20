@@ -677,6 +677,11 @@
   dependencies:
     undici-types "~5.25.1"
 
+"@types/psl@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@types/psl/-/psl-1.1.2.tgz#c701add99aa0837ef02cbf5eae3c41e61e7bf7cd"
+  integrity sha512-Z+9I4ZX5RhvHHEclwKFaKC4UnoS5vlvirOLkO7MLH8o/XBWSruYEAnlg+4Qd3fZm8TprkB04NzNGT79WmgcFuw==
+
 "@types/qs@*":
   version "6.9.8"
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.8.tgz#f2a7de3c107b89b441e071d5472e6b726b4adf45"
@@ -1934,6 +1939,11 @@ pseudomap@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
   integrity sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==
+
+psl@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/psl/-/psl-1.9.0.tgz#d0df2a137f00794565fcaf3b2c00cd09f8d5a5a7"
+  integrity sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==
 
 qs@6.11.0:
   version "6.11.0"

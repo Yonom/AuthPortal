@@ -26,9 +26,9 @@ import {
 const supportedProviders = {
   [EmailAuthProvider.PROVIDER_ID]: "Email",
   [GoogleAuthProvider.PROVIDER_ID]: "Google",
-  [FacebookAuthProvider.PROVIDER_ID]: "Facebook",
-  ["apple.com"]: "Apple",
-  [GithubAuthProvider.PROVIDER_ID]: "Github",
+  // [FacebookAuthProvider.PROVIDER_ID]: "Facebook",
+  // ["apple.com"]: "Apple",
+  // [GithubAuthProvider.PROVIDER_ID]: "Github",
 };
 
 const FormSchema = z.object({
