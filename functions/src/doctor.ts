@@ -25,7 +25,8 @@ type DoctorMessage =
         | "config/invalid-api-key"
         | "config/auth-not-enabled"
         | "provider/none-configured"
-        | "domain/none-configured";
+        | "domain/none-configured"
+        | "client/none-configured";
     }
   | {
       id: "internal-error";
@@ -45,6 +46,10 @@ type DoctorMessage =
       domain: string;
       helper_domain: string;
       provider_id: string;
+    }
+  | {
+      id: "client/no-redirect-uris";
+      client_id: string;
     };
 
 class DoctorReport {
@@ -466,6 +471,26 @@ const checkDomains = async (
   return report.freeze();
 };
 
+const checkClients = (appDoc: FirestoreAppDocument) => {
+  const { clients } = appDoc;
+  if (Object.keys(clients).length === 0) {
+    return DoctorReport.fromMessage({
+      id: "client/none-configured",
+    });
+  }
+
+  const report = new DoctorReport();
+  for (const [client_id, client] of Object.entries(clients)) {
+    if (client.redirect_uris.length === 0) {
+      report.addMessage({
+        id: "client/no-redirect-uris",
+        client_id,
+      });
+    }
+  }
+  return report.freeze();
+};
+
 const getDoctorReport = async (appId: string, appDoc: FirestoreAppDocument) => {
   const domains = await firestore()
     .collection("domains")
@@ -483,7 +508,8 @@ const getDoctorReport = async (appId: string, appDoc: FirestoreAppDocument) => {
       .concat(await checkFirebaseConfig(appDoc))
       .concat(ensureHasProviders(appDoc))
       .concat(await checkProviders(appDoc, domains))
-      .concat(await checkDomains(appDoc, domains));
+      .concat(await checkDomains(appDoc, domains))
+      .concat(checkClients(appDoc));
   } catch (ex: unknown) {
     if (ex instanceof DoctorReport) {
       report.concat(ex);
