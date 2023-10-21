@@ -4,6 +4,7 @@ import { Env } from "../types";
 export const PortalConfig = z.object({
   firebase_config: z.record(z.string()),
   providers: z.array(z.object({ provider_id: z.string() })),
+  theme: z.object({ primary_color: z.string().optional() }).optional(),
 });
 
 export const ConfigKVObject = z.object({
@@ -38,4 +39,8 @@ export const putConfigInKV = async (
   config: ConfigKVObject,
 ) => {
   await env.CONFIG.put(domain, JSON.stringify(config));
+};
+
+export const deleteConfigInKV = async (env: Env, domain: string) => {
+  await env.CONFIG.delete(domain);
 };

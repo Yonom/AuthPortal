@@ -1,5 +1,4 @@
 import { ComponentType } from "react";
-import EnsureDomainMatch from "./EnsureDomainMatch";
 
 export type PortalConfig = {
   firebase_config: Record<string, string>;
@@ -31,7 +30,7 @@ const fetchConfig = async (domain: string) => {
 };
 
 export const withConfigPage = (
-  Page: ComponentType<{ config: PortalConfig }>
+  Page: ComponentType<{ config: PortalConfig }>,
 ) => {
   const WithConfigPage = async ({
     params: { domain },

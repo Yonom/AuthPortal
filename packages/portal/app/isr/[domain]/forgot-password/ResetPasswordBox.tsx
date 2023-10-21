@@ -9,6 +9,8 @@ import { AuthButton } from "../../../../components/AuthButton";
 import { getURLWithReq } from "../../../../components/req/urlWithReq";
 import { PortalConfig } from "../../../../components/withConfigPage";
 import LinkWithReq from "@/components/link/LinkWithReq";
+import { getHasEmailLogin } from "@/components/getHasEmailLogin";
+import { notFound } from "next/navigation";
 
 export const initFirebase = (serverConfig: ResetPasswordBoxProps["config"]) => {
   const { firebase_config } = serverConfig;
@@ -22,21 +24,23 @@ type ResetPasswordBoxProps = {
 };
 
 const ResetPasswordBox: FC<ResetPasswordBoxProps> = ({ config }) => {
+  if (!getHasEmailLogin(config)) notFound();
+
   return (
     <div className="flex flex-col">
       <div className="mb-10">
-        <h1 className="text-2xl mb-2 text-slate-900">Reset your password</h1>
+        <h1 className="mb-2 text-2xl text-slate-900">Reset your password</h1>
         <p className="text-sm text-slate-500">
           Enter your email address and we will send you instructions to reset
           your password.
         </p>
       </div>
-      <AuthEmailLogin config={config} />
+      <AuthEmailReset config={config} />
     </div>
   );
 };
 
-const AuthEmailLogin: FC<ResetPasswordBoxProps> = ({ config }) => {
+const AuthEmailReset: FC<ResetPasswordBoxProps> = ({ config }) => {
   const {
     register,
     getValues,
@@ -49,7 +53,7 @@ const AuthEmailLogin: FC<ResetPasswordBoxProps> = ({ config }) => {
     },
   });
 
-  const handleEmailPasswordLogin = async () => {
+  const handleSetPasswordResetEmail = async () => {
     try {
       const { auth } = initFirebase(config);
       const { email } = getValues();
@@ -69,17 +73,17 @@ const AuthEmailLogin: FC<ResetPasswordBoxProps> = ({ config }) => {
 
   return (
     <form
-      onSubmit={handleSubmit(handleEmailPasswordLogin)}
+      onSubmit={handleSubmit(handleSetPasswordResetEmail)}
       className="flex flex-col gap-5"
     >
       <input
-        className="border border-gray-400 p-2 rounded w-full"
+        className="w-full rounded border border-gray-400 p-2"
         type="email"
         placeholder="Email"
         {...register("email", { required: true })}
       />
       {errors.email && (
-        <p className="text-red-500 text-sm font-bold">{errors.email.message}</p>
+        <p className="text-sm font-bold text-red-500">{errors.email.message}</p>
       )}
       <AuthButton type="submit" text="Send Reset Email" />
       <p className="text-xs">

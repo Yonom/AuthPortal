@@ -42,7 +42,7 @@ export const getDoctorReport = async (
     } else {
       report.addMessage({
         type: "internal-error",
-        message: `Internal error: ${ex}`,
+        message: `Unhandled error: ${ex}`,
         stack: (ex as Error).stack,
       });
     }

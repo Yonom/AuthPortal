@@ -22,6 +22,7 @@ export const ensureHasProviders = (appDoc: FirestoreAppDocument) => {
   }
   return DoctorReport.EMPTY;
 };
+
 const withProviderEnabledReport = async (
   appDoc: FirestoreAppDocument,
   provider_id: string,
@@ -45,6 +46,7 @@ const withProviderEnabledReport = async (
     }
   }
 };
+
 const getAuthUri = async (
   appDoc: FirestoreAppDocument,
   helperDomain: string,
@@ -72,6 +74,7 @@ const getAuthUri = async (
   const { authUri } = await res.json();
   return authUri;
 };
+
 const checkForGoogleRedirectToError = async (authUri: string) => {
   const res = await fetch(authUri, {
     redirect: "manual",
@@ -80,6 +83,7 @@ const checkForGoogleRedirectToError = async (authUri: string) => {
     .get("Location")
     ?.startsWith("https://accounts.google.com/signin/oauth/error");
 };
+
 const validateGoogleRedirectUri = async (
   appDoc: FirestoreAppDocument,
   domains: Domain[],
@@ -103,12 +107,15 @@ const validateGoogleRedirectUri = async (
       report.addMessage({
         type: "internal-error",
         message: `Failed to validate redirect uri: ${ex}`,
+        stack: (ex as Error).stack,
       });
     }
   }
   return report.freeze();
 };
+
 // const AppleAuthProvider = new OAuthProvider("apple.com");
+
 const checkProvider = async (
   appDoc: FirestoreAppDocument,
   provider: FirestoreAppDocument["portal_config"]["providers"][0],
@@ -158,6 +165,7 @@ const checkProvider = async (
       });
   }
 };
+
 export const checkProviders = async (
   appDoc: FirestoreAppDocument,
   domains: Domain[],

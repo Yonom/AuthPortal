@@ -12,6 +12,11 @@ export const FirestoreAppDocument = z.object({
       }),
     ),
     firebase_config: z.record(z.string()),
+    theme: z
+      .object({
+        primary_color: z.string().optional(),
+      })
+      .optional(),
   }),
   clients: z.record(
     z.object({

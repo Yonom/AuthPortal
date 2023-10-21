@@ -3,6 +3,8 @@ import { putToken } from "./oauth/putToken";
 import { postToken } from "./oauth/postToken";
 import { getConfig } from "./api/getConfig";
 import { putConfig } from "./api/putConfig";
+import { Env } from "./types";
+import { deleteConfig } from "./api/deleteConfig";
 
 const { preflight, corsify } = createCors({
   origins: ["*"],
@@ -27,6 +29,7 @@ const router = Router()
   .put("/oauth/token", putToken)
   .get("/api/config", withAuthorization, getConfig)
   .put("/api/config", withAuthorization, putConfig)
+  .delete("/api/config", withAuthorization, deleteConfig)
   .all("*", () => error(404));
 
 export default {

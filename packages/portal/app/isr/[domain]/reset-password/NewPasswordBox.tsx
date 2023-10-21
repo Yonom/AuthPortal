@@ -13,6 +13,8 @@ import { ErrorMessages } from "../../../../components/ErrorMessages";
 import { AuthButton } from "../../../../components/AuthButton";
 import { continueWithUser } from "../../../../components/req/continueWithUser";
 import { PortalConfig } from "../../../../components/withConfigPage";
+import { getHasEmailLogin } from "@/components/getHasEmailLogin";
+import { notFound } from "next/navigation";
 
 export const initFirebase = (serverConfig: NewPasswordBoxProps["config"]) => {
   const { firebase_config } = serverConfig;
@@ -29,7 +31,7 @@ const NewPasswordBox: FC<NewPasswordBoxProps> = ({ config }) => {
   return (
     <div className="flex flex-col">
       <div className="mb-10">
-        <h1 className="text-2xl mb-2 text-slate-900">Reset your password</h1>
+        <h1 className="mb-2 text-2xl text-slate-900">Reset your password</h1>
         <p className="text-sm text-slate-500">Set up a new password.</p>
       </div>
       <AuthNewPassword config={config} />
@@ -38,6 +40,8 @@ const NewPasswordBox: FC<NewPasswordBoxProps> = ({ config }) => {
 };
 
 const AuthNewPassword: FC<NewPasswordBoxProps> = ({ config }) => {
+  if (!getHasEmailLogin(config)) notFound();
+
   const {
     register,
     watch,
@@ -65,7 +69,7 @@ const AuthNewPassword: FC<NewPasswordBoxProps> = ({ config }) => {
       const credential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       continueWithUser(credential.user);
     } catch (ex) {
@@ -85,18 +89,18 @@ const AuthNewPassword: FC<NewPasswordBoxProps> = ({ config }) => {
       className="flex flex-col gap-5"
     >
       <input
-        className="border border-gray-400 p-2 rounded w-full"
+        className="w-full rounded border border-gray-400 p-2"
         type="password"
         placeholder="Password"
         {...register("password", { required: true })}
       />
       {errors.password && (
-        <p className="text-red-500 text-sm font-bold">
+        <p className="text-sm font-bold text-red-500">
           {errors.password.message}
         </p>
       )}
       <input
-        className="border border-gray-400 p-2 rounded w-full"
+        className="w-full rounded border border-gray-400 p-2"
         type="password"
         placeholder="Password Confirmation"
         {...register("passwordConfirmation", {
@@ -109,7 +113,7 @@ const AuthNewPassword: FC<NewPasswordBoxProps> = ({ config }) => {
         })}
       />
       {errors.passwordConfirmation && (
-        <p className="text-red-500 text-sm font-bold">
+        <p className="text-sm font-bold text-red-500">
           {errors.passwordConfirmation.message}
         </p>
       )}
