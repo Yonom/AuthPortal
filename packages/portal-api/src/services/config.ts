@@ -9,22 +9,13 @@ export const PortalConfig = z.object({
 
 export const ConfigKVObject = z.object({
   portal_config: PortalConfig,
-  clients: z.record(z.object({ redirect_uris: z.string().array() })),
+  clients: z.record(
+    z.object({ name: z.string(), redirect_uris: z.string().array() }),
+  ),
 });
 
-export type PortalConfig = {
-  firebase_config: Record<string, string>;
-  providers: { provider_id: string }[];
-};
-
-export type ConfigKVObject = {
-  portal_config: PortalConfig;
-  clients: {
-    [client_id: string]: {
-      redirect_uris: string[];
-    };
-  };
-};
+export type PortalConfig = z.infer<typeof PortalConfig>;
+export type ConfigKVObject = z.infer<typeof ConfigKVObject>;
 
 export const getConfigFromKV = async (env: Env, domain: string) => {
   const res = await env.CONFIG.get<ConfigKVObject>(domain, "json");

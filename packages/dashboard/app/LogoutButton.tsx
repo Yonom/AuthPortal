@@ -1,6 +1,6 @@
 "use client";
 
-import { logout } from "@/lib/withAuth";
+import { logout } from "@/components/withAuth";
 import { auth } from "../lib/firebase";
 import { signOut } from "firebase/auth";
 

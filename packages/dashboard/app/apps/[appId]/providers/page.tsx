@@ -2,26 +2,17 @@
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import withAuth from "@/lib/withAuth";
-import { useDocumentData } from "react-firebase-hooks/firestore";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { firestoreCollections } from "@/lib/firebase";
+import withAuth from "@/components/withAuth";
+import { serverTimestamp, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import {
-  EmailAuthProvider,
-  FacebookAuthProvider,
-  GithubAuthProvider,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import { EmailAuthProvider, GoogleAuthProvider } from "firebase/auth";
+import { useApp } from "@/lib/useApp";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { withDoctorReport } from "@/components/withDoctorReport";
 
 const supportedProviders = {
   [GoogleAuthProvider.PROVIDER_ID]: "Google",
@@ -31,15 +22,67 @@ const supportedProviders = {
   // [GithubAuthProvider.PROVIDER_ID]: "Github",
 };
 
+const NoneConfigured = withDoctorReport("provider/none-configured", () => {
+  return (
+    <Alert variant="destructive">
+      <ExclamationTriangleIcon className="h-4 w-4" />
+      <AlertTitle>No providers configured for this app yet.</AlertTitle>
+      <AlertDescription>Add a provider to get started.</AlertDescription>
+    </Alert>
+  );
+});
+
+const NotEnabled = withDoctorReport("provider/not-enabled", ({ message }) => {
+  const providerName =
+    supportedProviders[
+      message.provider_id as keyof typeof supportedProviders
+    ] ?? message.provider_id;
+  return (
+    <Alert variant="destructive">
+      <ExclamationTriangleIcon className="h-4 w-4" />
+      <AlertTitle>
+        The provider {providerName} is not enabled for this app.
+      </AlertTitle>
+      <AlertDescription>
+        You must enable the provider {providerName} in the Firebase console
+        first.
+      </AlertDescription>
+    </Alert>
+  );
+});
+
+const RedirectUriNotWhitelisted = withDoctorReport(
+  "provider/redirect-uri-not-whitelisted",
+  ({ message }) => {
+    const providerName =
+      supportedProviders[
+        message.provider_id as keyof typeof supportedProviders
+      ] ?? message.provider_id;
+
+    return (
+      <Alert variant="destructive">
+        <ExclamationTriangleIcon className="h-4 w-4" />
+        <AlertTitle>
+          AuthPortal is not whitelisted for {providerName}.
+        </AlertTitle>
+        <AlertDescription>
+          In the provider settings for {providerName}, add the following
+          redirect URL:{" "}
+          <code>https://{message.helper_domain}/__/auth/handler</code>
+        </AlertDescription>
+      </Alert>
+    );
+  },
+);
+
 const FormSchema = z.object({
   providerIds: z.string().array(),
 });
 
 type FormSchema = z.infer<typeof FormSchema>;
 
-const SetupPage = ({ params }: { params: { appId: string } }) => {
-  const ref = doc(firestoreCollections.apps, params.appId);
-  const [app, loadingApp] = useDocumentData(ref);
+const ProvidersPage = ({ params }: { params: { appId: string } }) => {
+  const { app, doctor, ref } = useApp(params.appId);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -55,6 +98,7 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
     );
   }, [form, app?.portal_config.providers]);
 
+  const [isBusy, setIsBusy] = useState(false);
   const handleSubmit = async (values: FormSchema) => {
     setIsBusy(true);
     try {
@@ -67,16 +111,23 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
     } catch (ex: unknown) {
       console.error(ex);
     } finally {
-      setIsBusy(false);
+      // wait for the Verifying... indicator to show
+      setTimeout(() => {
+        setIsBusy(false);
+      }, 500);
     }
   };
 
-  const [isBusy, setIsBusy] = useState(false);
-  if (loadingApp) return <p>Loading...</p>;
+  if (!app || doctor === undefined) return <p>Loading...</p>;
 
   return (
-    <main>
-      <h2 className="mb-4 text-3xl font-bold tracking-tight">Setup</h2>
+    <main className="flex flex-col gap-4">
+      <h2 className="text-3xl font-bold tracking-tight">Setup</h2>
+
+      <NoneConfigured report={doctor} />
+      <NotEnabled report={doctor} />
+      <RedirectUriNotWhitelisted report={doctor} />
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           {Object.entries(supportedProviders).map(([p, label]) => (
@@ -92,8 +143,8 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
               <FormLabel>{label}</FormLabel>
             </FormItem>
           ))}
-          <Button disabled={isBusy} type="submit">
-            {isBusy ? "Saving..." : "Save"}
+          <Button disabled={isBusy || !doctor} type="submit">
+            {isBusy ? "Saving..." : !doctor ? "Validating..." : "Save"}
           </Button>
         </form>
       </Form>
@@ -101,4 +152,4 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
   );
 };
 
-export default withAuth(SetupPage);
+export default withAuth(ProvidersPage);

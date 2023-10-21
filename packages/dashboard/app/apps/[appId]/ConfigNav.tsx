@@ -19,12 +19,16 @@ const ConfigNav: FC<ConfigNavParams> = ({ appId, setupComplete }) => {
           href: `/apps/${appId}/setup`,
         },
         setupComplete && {
-          title: "Providers",
+          title: "Sign-in Methods",
           href: `/apps/${appId}/providers`,
         },
         setupComplete && {
-          title: "Installation",
-          href: `/apps/${appId}/installation`,
+          title: "Domains",
+          href: `/apps/${appId}/domains`,
+        },
+        setupComplete && {
+          title: "Apps",
+          href: `/apps/${appId}/clients`,
         },
       ].filter(isTruthy),
     [appId, setupComplete],

@@ -18,7 +18,7 @@ import { auth, firestoreCollections } from "../../lib/firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import withAuth from "../../lib/withAuth";
+import withAuth from "../../components/withAuth";
 import { _generateRandomString } from "@authportal/core/signIn/utils/crypto";
 
 const FormSchema = z.object({
@@ -47,6 +47,7 @@ const NewPage = () => {
       },
       clients: {
         ["pk_" + _generateRandomString().substring(0, 24)]: {
+          name: "Default",
           redirect_uris: ["http://localhost/signin-authportal"],
         },
       },

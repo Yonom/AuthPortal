@@ -15,6 +15,8 @@ const orderFields = <T extends Record<string, unknown>>(
   return newObj;
 };
 export const configStrToConfig = (configStr: string) => {
+  if (configStr === "") return {};
+
   const regex = /firebaseConfig\s*=\s*(?<config>{(?:.|\s)+})/;
   const configJs = regex.exec(configStr)?.groups?.config;
   if (!configJs) throw new Error("Invalid config input");

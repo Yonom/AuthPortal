@@ -2,8 +2,8 @@
 
 import { ComponentType } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./firebase";
-import { authportal } from "./authportal";
+import { auth } from "../lib/firebase";
+import { authportal } from "../lib/authportal";
 import { User, signOut } from "firebase/auth";
 
 type WithAuthProps = {

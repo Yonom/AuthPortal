@@ -55,7 +55,10 @@ export const checkFirebaseConfig = async (appDoc: FirestoreAppDocument) => {
       ];
       if (errorWhitelist.includes(ex.code)) {
         return DoctorReport.EMPTY;
-      } else if (ex.code === "auth/invalid-api-key") {
+      } else if (
+        ex.code === "auth/invalid-api-key" ||
+        ex.code === "auth/api-key-not-valid.-please-pass-a-valid-api-key." // TODO investigate
+      ) {
         // fatal, throw
         throw DoctorReport.fromMessage({
           type: "config/invalid-api-key",

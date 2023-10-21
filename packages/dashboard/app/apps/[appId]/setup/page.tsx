@@ -15,22 +15,88 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import withAuth from "@/lib/withAuth";
-import { useDocumentData } from "react-firebase-hooks/firestore";
+import withAuth from "@/components/withAuth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { firestoreCollections } from "@/lib/firebase";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { configToConfigStr, configStrToConfig } from "./configStrParser";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
+import { withDoctorReport } from "../../../../components/withDoctorReport";
+import { useApp } from "../../../../lib/useApp";
+
+const MissingConfig = withDoctorReport("config/missing", () => {
+  return (
+    <Alert variant="destructive">
+      <ExclamationTriangleIcon className="h-4 w-4" />
+      <AlertTitle>Missing Configuration</AlertTitle>
+      <AlertDescription>
+        Add the Firebase configuration snippet to get started.
+      </AlertDescription>
+    </Alert>
+  );
+});
+
+const MalformedConfig = withDoctorReport("config/malformed", () => {
+  return (
+    <Alert variant="destructive">
+      <ExclamationTriangleIcon className="h-4 w-4" />
+      <AlertTitle>Malformatted Configuration</AlertTitle>
+      <AlertDescription>
+        The Firebase configuration snippet is malformed. Make sure you copy and
+        paste the snippet exactly as presented in the Firebase console.
+      </AlertDescription>
+    </Alert>
+  );
+});
+
+const InvalidAPIKey = withDoctorReport("config/invalid-api-key", () => {
+  return (
+    <Alert variant="destructive">
+      <ExclamationTriangleIcon className="h-4 w-4" />
+      <AlertTitle>Invalid API Key</AlertTitle>
+      <AlertDescription>
+        Your API key seems to have expired. Check the Firebase console for an
+        updated configuration snippet.
+      </AlertDescription>
+    </Alert>
+  );
+});
+
+const AuthNotEnabled = withDoctorReport("config/auth-not-enabled", () => {
+  return (
+    <Alert variant="destructive">
+      <ExclamationTriangleIcon className="h-4 w-4" />
+      <AlertTitle>Firebase Authentication is not enabled</AlertTitle>
+      <AlertDescription>
+        AuthPortal requires Firebase Authentication to be enabled. Please enable
+        Firebase Authentication in the Firebase console.
+      </AlertDescription>
+    </Alert>
+  );
+});
 
 const FormSchema = z.object({
-  config: z.string(),
+  config: z.string().refine(
+    (s) => {
+      try {
+        configStrToConfig(s);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    (val) => ({
+      message: `Unable to parse Firebase configuration snippet, make sure you copy and paste the snippet exactly as presented in the Firebase console.`,
+    }),
+  ),
 });
 
 type FormSchema = z.infer<typeof FormSchema>;
 
 const SetupPage = ({ params }: { params: { appId: string } }) => {
   const ref = doc(firestoreCollections.apps, params.appId);
-  const [app, loadingApp] = useDocumentData(ref);
+  const { app, doctor } = useApp(params.appId);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -48,6 +114,7 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
     );
   }, [form, app]);
 
+  const [isBusy, setIsBusy] = useState(false);
   const handleSubmit = async (values: FormSchema) => {
     setIsBusy(true);
     try {
@@ -62,16 +129,24 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
     } catch (ex) {
       alert(ex);
     } finally {
-      setIsBusy(false);
+      // wait for the Verifying... indicator to show
+      setTimeout(() => {
+        setIsBusy(false);
+      }, 500);
     }
   };
 
-  const [isBusy, setIsBusy] = useState(false);
-  if (loadingApp) return <p>Loading...</p>;
+  if (!app || doctor === undefined) return <p>Loading...</p>;
 
   return (
-    <main>
-      <h2 className="mb-4 text-3xl font-bold tracking-tight">Setup</h2>
+    <main className="flex flex-col gap-4">
+      <h2 className="text-3xl font-bold tracking-tight">Setup</h2>
+
+      <MissingConfig report={doctor} />
+      <MalformedConfig report={doctor} />
+      <InvalidAPIKey report={doctor} />
+      <AuthNotEnabled report={doctor} />
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           <FormField
@@ -103,8 +178,8 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
               </FormItem>
             )}
           />
-          <Button disabled={isBusy} type="submit">
-            {isBusy ? "Saving..." : "Save"}
+          <Button disabled={isBusy || !doctor} type="submit">
+            {isBusy ? "Saving..." : !doctor ? "Validating..." : "Save"}
           </Button>
         </form>
       </Form>

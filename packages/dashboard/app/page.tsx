@@ -6,7 +6,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { auth, firestoreCollections } from "../lib/firebase";
 import { query, where } from "firebase/firestore";
-import withAuth from "../lib/withAuth";
+import withAuth from "../components/withAuth";
 import { AppCard } from "./AppCard";
 
 function Home() {
