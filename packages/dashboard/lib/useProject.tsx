@@ -23,7 +23,8 @@ export const useProject = (projectId: string) => {
   if (
     project?.updated_at &&
     doctor &&
-    project.updated_at.seconds > doctor.created_at.seconds
+    project.updated_at.seconds > doctor.created_at.seconds &&
+    new Date().getTime() - project.updated_at.toMillis() < 1000 * 10 // 10 second timeout
   ) {
     return { project, ref, doctor: null };
   }

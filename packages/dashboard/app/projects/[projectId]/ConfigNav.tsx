@@ -30,7 +30,7 @@ const ConfigNav: FC<ConfigNavParams> = ({
           href: `/projects/${projectId}/domains`,
         },
         setupComplete && {
-          title: "Apps",
+          title: "Your App",
           href: `/projects/${projectId}/clients`,
         },
       ].filter(isTruthy),

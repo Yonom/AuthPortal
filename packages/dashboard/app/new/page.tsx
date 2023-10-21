@@ -61,8 +61,11 @@ const NewPage = () => {
 
     const domainRef = doc(
       firestoreCollections.domains,
-      _generateRandomString().substring(0, 16).toLowerCase() +
-        ".authportal.site",
+      _generateRandomString()
+        .replace("-", "")
+        .replace("_", "")
+        .substring(0, 16)
+        .toLowerCase() + ".authportal.site",
     );
     await setDoc(domainRef, {
       project_id: newProjectRef.id,

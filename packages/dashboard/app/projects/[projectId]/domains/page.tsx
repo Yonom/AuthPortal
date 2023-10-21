@@ -58,7 +58,6 @@ const DomainsPage = ({ params }: { params: { projectId: string } }) => {
   const domainRef = query(
     firestoreCollections.domains,
     where("project_id", "==", params.projectId),
-    limit(1),
   );
   const [domains] = useCollection(domainRef);
 

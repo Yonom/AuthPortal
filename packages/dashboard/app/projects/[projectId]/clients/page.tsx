@@ -56,7 +56,7 @@ const ClientsPage = ({ params }: { params: { projectId: string } }) => {
 
   return (
     <main className="flex flex-col gap-4">
-      <h2 className="text-3xl font-bold tracking-tight">Apps</h2>
+      <h2 className="text-3xl font-bold tracking-tight">Your App</h2>
 
       <NoneConfigured report={doctor} />
       <NoRedirectUris report={doctor} />
