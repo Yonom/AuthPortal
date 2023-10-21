@@ -24,8 +24,8 @@ import {
 } from "firebase/auth";
 
 const supportedProviders = {
-  [EmailAuthProvider.PROVIDER_ID]: "Email",
   [GoogleAuthProvider.PROVIDER_ID]: "Google",
+  [EmailAuthProvider.PROVIDER_ID]: "Email",
   // [FacebookAuthProvider.PROVIDER_ID]: "Facebook",
   // ["apple.com"]: "Apple",
   // [GithubAuthProvider.PROVIDER_ID]: "Github",
