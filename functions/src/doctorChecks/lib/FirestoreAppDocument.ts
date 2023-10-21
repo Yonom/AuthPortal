@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// TODO duplicate
 export const FirestoreAppDocument = z.object({
   admin_config: z.object({
     name: z.string(),

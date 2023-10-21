@@ -12,7 +12,7 @@ import { REDIRECT_FAILED_ERROR } from "../../AuthPortalError";
 import { continueWithUser } from "../../../../../components/req/continueWithUser";
 import { PortalConfig } from "../../../../../components/withConfigPage";
 import { cache } from "react";
-import { useNoSSR } from "@/components/req/useNoSSR";
+import { noSSR } from "@/components/req/noSSR";
 import Loading from "./loading";
 
 const handleRedirect = cache(
@@ -31,7 +31,7 @@ const handleRedirect = cache(
       throw REDIRECT_FAILED_ERROR();
     }
     continueWithUser(credential.user);
-  }
+  },
 );
 
 type FirebaseRedirectHandlerProps = {
@@ -39,7 +39,7 @@ type FirebaseRedirectHandlerProps = {
 };
 
 const FirebaseRedirectBox: FC<FirebaseRedirectHandlerProps> = ({ config }) => {
-  useNoSSR();
+  noSSR();
   use(handleRedirect(config));
 
   return <Loading />;

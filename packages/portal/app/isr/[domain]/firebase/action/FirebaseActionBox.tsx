@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { redirect, useSearchParams } from "next/navigation";
-import { useNoSSR } from "@/components/req/useNoSSR";
+import { noSSR } from "@/components/req/noSSR";
 import Loading from "./loading";
 
 const FirebaseActionSearchParams = z.object({
@@ -17,14 +17,14 @@ const ContinueUrlSearchParams = z.object({
 });
 
 const FirebaseActionPage = () => {
-  useNoSSR();
+  noSSR();
 
   const searchParams = useSearchParams();
   const { mode, oobCode, continueUrl } = FirebaseActionSearchParams.parse(
-    Object.fromEntries(searchParams)
+    Object.fromEntries(searchParams),
   );
   const { req } = ContinueUrlSearchParams.parse(
-    Object.fromEntries(new URL(continueUrl).searchParams)
+    Object.fromEntries(new URL(continueUrl).searchParams),
   );
 
   if (mode === "resetPassword") {

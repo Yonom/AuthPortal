@@ -9,7 +9,7 @@ export const handleDomainDelete = onDocumentDeleted(
     }
 
     const url = new URL("https://portal-api.authportal.dev/api/config");
-    url.searchParams.append("domain", request.params.domain);
+    url.searchParams.set("domain", request.params.domain);
     await fetch(url, {
       method: "DELETE",
       headers: {

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { ReqParams, decryptReq, encryptReq } from "./reqEncryption";
 import { use } from "react";
-import { useNoSSR } from "./useNoSSR";
+import { noSSR } from "./noSSR";
 import { cache } from "react";
 
 const AuthorizeSearchParams = ReqParams.extend({
@@ -64,7 +64,7 @@ export const getURLWithReq = cache(async (url: string) => {
 });
 
 export const useURLWithReq = (url: string) => {
-  useNoSSR();
+  noSSR();
 
   return use(getURLWithReq(url));
 };
