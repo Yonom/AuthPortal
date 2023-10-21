@@ -1,0 +1,23 @@
+import { z } from "zod";
+
+export const FirestoreAppDocument = z.object({
+  admin_config: z.object({
+    name: z.string(),
+    members: z.array(z.string()),
+  }),
+  portal_config: z.object({
+    providers: z.array(
+      z.object({
+        provider_id: z.string(),
+      }),
+    ),
+    firebase_config: z.record(z.string()),
+  }),
+  clients: z.record(
+    z.object({
+      redirect_uris: z.array(z.string()),
+    }),
+  ),
+});
+
+export type FirestoreAppDocument = z.infer<typeof FirestoreAppDocument>;
