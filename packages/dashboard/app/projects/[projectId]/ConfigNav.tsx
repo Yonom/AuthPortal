@@ -6,32 +6,35 @@ const isTruthy = <T,>(item: T | null | undefined | false | ""): item is T => {
 };
 
 type ConfigNavParams = {
-  appId: string;
+  projectId: string;
   setupComplete: boolean;
 };
 
-const ConfigNav: FC<ConfigNavParams> = ({ appId, setupComplete }) => {
+const ConfigNav: FC<ConfigNavParams> = ({
+  projectId: projectId,
+  setupComplete,
+}) => {
   const sidebarNavItems = useMemo(
     () =>
       [
         {
           title: "Firebase Configuration",
-          href: `/apps/${appId}/setup`,
+          href: `/projects/${projectId}/setup`,
         },
         setupComplete && {
           title: "Sign-in Methods",
-          href: `/apps/${appId}/providers`,
+          href: `/projects/${projectId}/providers`,
         },
         setupComplete && {
           title: "Domains",
-          href: `/apps/${appId}/domains`,
+          href: `/projects/${projectId}/domains`,
         },
         setupComplete && {
           title: "Apps",
-          href: `/apps/${appId}/clients`,
+          href: `/projects/${projectId}/clients`,
         },
       ].filter(isTruthy),
-    [appId, setupComplete],
+    [projectId, setupComplete],
   );
   return <SidebarNav items={sidebarNavItems} />;
 };

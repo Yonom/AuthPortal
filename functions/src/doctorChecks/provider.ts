@@ -8,13 +8,13 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { DoctorReport } from "./lib/DoctorReport";
-import { FirestoreAppDocument } from "./lib/FirestoreAppDocument";
+import { Project } from "./lib/Project";
 import { Domain } from "./lib/Domain";
 import { withFirebaseApp } from "./lib/withFirebaseApp";
 import { getHelperDomains } from "./lib/Domain";
 
-export const ensureHasProviders = (appDoc: FirestoreAppDocument) => {
-  const { providers } = appDoc.portal_config;
+export const ensureHasProviders = (project: Project) => {
+  const { providers } = project.portal_config;
   if (providers.length === 0) {
     return DoctorReport.fromMessage({
       type: "provider/none-configured",
@@ -24,12 +24,12 @@ export const ensureHasProviders = (appDoc: FirestoreAppDocument) => {
 };
 
 const withProviderEnabledReport = async (
-  appDoc: FirestoreAppDocument,
+  project: Project,
   provider_id: string,
   callback: (auth: Auth) => Promise<unknown>,
 ) => {
   try {
-    await withFirebaseApp(appDoc, async (app) => {
+    await withFirebaseApp(project, async (app) => {
       const auth = getAuth(app);
       await callback(auth);
     });
@@ -47,14 +47,11 @@ const withProviderEnabledReport = async (
   }
 };
 
-const getAuthUri = async (
-  appDoc: FirestoreAppDocument,
-  helperDomain: string,
-) => {
+const getAuthUri = async (project: Project, helperDomain: string) => {
   const url = new URL(
     "https://www.googleapis.com/identitytoolkit/v3/relyingparty/createAuthUri",
   );
-  url.searchParams.set("key", appDoc.portal_config.firebase_config.apiKey);
+  url.searchParams.set("key", project.portal_config.firebase_config.apiKey);
   const res = await fetch(url, {
     method: "POST",
     redirect: "manual",
@@ -85,14 +82,14 @@ const checkForGoogleRedirectToError = async (authUri: string) => {
 };
 
 const validateGoogleRedirectUri = async (
-  appDoc: FirestoreAppDocument,
+  project: Project,
   domains: Domain[],
 ) => {
-  const helperDomains = getHelperDomains(appDoc, domains);
+  const helperDomains = getHelperDomains(project, domains);
   const report = new DoctorReport();
   for (const [helperDomain, domains] of Object.entries(helperDomains)) {
     try {
-      const authUri = await getAuthUri(appDoc, helperDomain);
+      const authUri = await getAuthUri(project, helperDomain);
       if (await checkForGoogleRedirectToError(authUri)) {
         for (const domain of domains) {
           report.addMessage({
@@ -117,15 +114,15 @@ const validateGoogleRedirectUri = async (
 // const AppleAuthProvider = new OAuthProvider("apple.com");
 
 const checkProvider = async (
-  appDoc: FirestoreAppDocument,
-  provider: FirestoreAppDocument["portal_config"]["providers"][0],
+  project: Project,
+  provider: Project["portal_config"]["providers"][0],
   domains: Domain[],
 ) => {
   // TODO redirect uri validation for each provider
   const { provider_id } = provider;
   switch (provider_id) {
     case EmailAuthProvider.PROVIDER_ID: {
-      return withProviderEnabledReport(appDoc, provider_id, (auth) =>
+      return withProviderEnabledReport(project, provider_id, (auth) =>
         signInWithEmailAndPassword(
           auth,
           "authportal-test@example.com",
@@ -135,24 +132,24 @@ const checkProvider = async (
     }
     case GoogleAuthProvider.PROVIDER_ID: {
       const providerEnabled = await withProviderEnabledReport(
-        appDoc,
+        project,
         provider_id,
         (auth) =>
           signInWithCredential(auth, GoogleAuthProvider.credential("-")),
       );
       if (providerEnabled.messages.length > 0) return providerEnabled;
-      return validateGoogleRedirectUri(appDoc, domains);
+      return validateGoogleRedirectUri(project, domains);
     }
     // case FacebookAuthProvider.PROVIDER_ID:
-    //   return withProviderEnabledReport(appDoc, provider_id, (auth) =>
+    //   return withProviderEnabledReport(project, provider_id, (auth) =>
     //     signInWithCredential(auth, FacebookAuthProvider.credential("-")),
     //   );
     // case GithubAuthProvider.PROVIDER_ID:
-    //   return withProviderEnabledReport(appDoc, provider_id, (auth) =>
+    //   return withProviderEnabledReport(project, provider_id, (auth) =>
     //     signInWithCredential(auth, GithubAuthProvider.credential("-")),
     //   );
     // case AppleAuthProvider.providerId:
-    //   return withProviderEnabledReport(appDoc, provider_id, (auth) =>
+    //   return withProviderEnabledReport(project, provider_id, (auth) =>
     //     signInWithCredential(
     //       auth,
     //       AppleAuthProvider.credential({ idToken: "-" }),
@@ -166,14 +163,11 @@ const checkProvider = async (
   }
 };
 
-export const checkProviders = async (
-  appDoc: FirestoreAppDocument,
-  domains: Domain[],
-) => {
+export const checkProviders = async (project: Project, domains: Domain[]) => {
   const report = new DoctorReport();
-  const { providers } = appDoc.portal_config;
+  const { providers } = project.portal_config;
   for (const provider of providers) {
-    report.concat(await checkProvider(appDoc, provider, domains));
+    report.concat(await checkProvider(project, provider, domains));
   }
   return report.freeze();
 };

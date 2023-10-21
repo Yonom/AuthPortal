@@ -23,7 +23,7 @@ import { configToConfigStr, configStrToConfig } from "./configStrParser";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "../../../../components/withDoctorReport";
-import { useApp } from "../../../../lib/useApp";
+import { useProject } from "../../../../lib/useProject";
 
 const MissingConfig = withDoctorReport("config/missing", () => {
   return (
@@ -94,9 +94,9 @@ const FormSchema = z.object({
 
 type FormSchema = z.infer<typeof FormSchema>;
 
-const SetupPage = ({ params }: { params: { appId: string } }) => {
-  const ref = doc(firestoreCollections.apps, params.appId);
-  const { app, doctor } = useApp(params.appId);
+const SetupPage = ({ params }: { params: { projectId: string } }) => {
+  const ref = doc(firestoreCollections.projects, params.projectId);
+  const { project, doctor } = useProject(params.projectId);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -106,13 +106,13 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
   });
 
   useEffect(() => {
-    if (!app) return;
+    if (!project) return;
 
     form.setValue(
       "config",
-      configToConfigStr(app.portal_config.firebase_config),
+      configToConfigStr(project.portal_config.firebase_config),
     );
-  }, [form, app]);
+  }, [form, project]);
 
   const [isBusy, setIsBusy] = useState(false);
   const handleSubmit = async (values: FormSchema) => {
@@ -136,7 +136,7 @@ const SetupPage = ({ params }: { params: { appId: string } }) => {
     }
   };
 
-  if (!app || doctor === undefined) return <p>Loading...</p>;
+  if (!project || doctor === undefined) return <p>Loading...</p>;
 
   return (
     <main className="flex flex-col gap-4">

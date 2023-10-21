@@ -37,10 +37,10 @@ const NewPage = () => {
     },
   });
 
-  const addApp = async (name: string, userId: string) => {
-    const newAppRef = doc(firestoreCollections.apps);
+  const addProject = async (name: string, userId: string) => {
+    const newProjectRef = doc(firestoreCollections.projects);
 
-    await setDoc(newAppRef, {
+    await setDoc(newProjectRef, {
       admin_config: {
         name,
         members: [userId],
@@ -65,12 +65,12 @@ const NewPage = () => {
         ".authportal.site",
     );
     await setDoc(domainRef, {
-      app_id: newAppRef.id,
+      project_id: newProjectRef.id,
       created_at: serverTimestamp(),
       updated_at: serverTimestamp(),
     });
 
-    return newAppRef.id;
+    return newProjectRef.id;
   };
 
   const [loading, setLoading] = useState(false);
@@ -87,10 +87,10 @@ const NewPage = () => {
     setLoading(true);
 
     try {
-      const newAppId = await addApp(name, userId);
-      router.push(`/apps/${newAppId}/setup`); // Redirect to the new app's config page
+      const newProjectId = await addProject(name, userId);
+      router.push(`/projects/${newProjectId}/setup`); // Redirect to the new project's config page
     } catch (error) {
-      console.error("Error adding new app: ", error);
+      console.error("Error adding new project: ", error);
       setLoading(false);
     }
   };
@@ -98,7 +98,7 @@ const NewPage = () => {
   return (
     <main>
       <h2 className="mb-4 text-3xl font-bold tracking-tight">
-        Create a New App
+        Create a New Project
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
@@ -109,7 +109,7 @@ const NewPage = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="My App" {...field} />
+                  <Input placeholder="My Project" {...field} />
                 </FormControl>
                 <FormDescription>
                   This is for your own records and will not be displayed to your

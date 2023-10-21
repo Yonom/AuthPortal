@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { DoctorReport } from "./lib/DoctorReport";
-import { FirestoreAppDocument } from "./lib/FirestoreAppDocument";
+import { Project } from "./lib/Project";
 import { FirebaseError } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { withFirebaseApp } from "./lib/withFirebaseApp";
@@ -17,15 +17,15 @@ const FirebaseConfig = z
   })
   .strict();
 
-export const checkFirebaseConfigSchema = (appDoc: FirestoreAppDocument) => {
-  if (Object.keys(appDoc.portal_config.firebase_config).length === 0) {
+export const checkFirebaseConfigSchema = (project: Project) => {
+  if (Object.keys(project.portal_config.firebase_config).length === 0) {
     // fatal, throw
     throw DoctorReport.fromMessage({
       type: "config/missing",
     });
   }
 
-  const res = FirebaseConfig.safeParse(appDoc.portal_config.firebase_config);
+  const res = FirebaseConfig.safeParse(project.portal_config.firebase_config);
   if (res.success) return DoctorReport.EMPTY;
 
   return DoctorReport.fromMessage({
@@ -33,8 +33,8 @@ export const checkFirebaseConfigSchema = (appDoc: FirestoreAppDocument) => {
   });
 };
 
-export const checkFirebaseConfig = async (appDoc: FirestoreAppDocument) => {
-  return withFirebaseApp(appDoc, async (app) => {
+export const checkFirebaseConfig = async (project: Project) => {
+  return withFirebaseApp(project, async (app) => {
     try {
       const auth = getAuth(app);
       await signInWithEmailAndPassword(

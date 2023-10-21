@@ -1,16 +1,13 @@
 import { EmailAuthProvider } from "firebase/auth";
 import { parse as pslParse } from "psl";
 import { DoctorReport } from "./lib/DoctorReport";
-import { FirestoreAppDocument } from "./lib/FirestoreAppDocument";
+import { Project } from "./lib/Project";
 import { Domain } from "./lib/Domain";
 import { getHelperDomain } from "./lib/Domain";
 
-const checkDomainWhitelist = async (
-  appDoc: FirestoreAppDocument,
-  domains: Domain[],
-) => {
+const checkDomainWhitelist = async (project: Project, domains: Domain[]) => {
   const url = new URL("https://identitytoolkit.googleapis.com/v1/projects");
-  url.searchParams.set("key", appDoc.portal_config.firebase_config.apiKey);
+  url.searchParams.set("key", project.portal_config.firebase_config.apiKey);
   const res = await fetch(url);
   if (!res.ok) {
     return DoctorReport.fromMessage({
@@ -33,8 +30,8 @@ const checkDomainWhitelist = async (
   }
   return DoctorReport.EMPTY;
 };
-const checkHelperDomain = (appDoc: FirestoreAppDocument, domain: Domain) => {
-  const helperDomain = getHelperDomain(appDoc, domain);
+const checkHelperDomain = (project: Project, domain: Domain) => {
+  const helperDomain = getHelperDomain(project, domain);
 
   // get the domain part of the authDomain (strip subdomains)
   const authPortalPslResult = pslParse(domain.domain);
@@ -56,10 +53,7 @@ const checkHelperDomain = (appDoc: FirestoreAppDocument, domain: Domain) => {
 
   return DoctorReport.EMPTY;
 };
-export const checkDomains = async (
-  appDoc: FirestoreAppDocument,
-  domains: Domain[],
-) => {
+export const checkDomains = async (project: Project, domains: Domain[]) => {
   // report if no domains are configured
   if (domains.length === 0) {
     return DoctorReport.fromMessage({
@@ -69,7 +63,7 @@ export const checkDomains = async (
 
   // if no oauth provider is configured, skip the next checks
   if (
-    appDoc.portal_config.providers.every(
+    project.portal_config.providers.every(
       (p) => p.provider_id == EmailAuthProvider.PROVIDER_ID,
     )
   ) {
@@ -78,11 +72,11 @@ export const checkDomains = async (
 
   // check if domain is whitelisted for oauth
   const report = new DoctorReport();
-  report.concat(await checkDomainWhitelist(appDoc, domains));
+  report.concat(await checkDomainWhitelist(project, domains));
 
   // check if helper domain is under the same domain
   for (const domain of domains) {
-    report.concat(checkHelperDomain(appDoc, domain));
+    report.concat(checkHelperDomain(project, domain));
   }
 
   // TODO dns records

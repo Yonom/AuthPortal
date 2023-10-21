@@ -9,7 +9,7 @@ import withAuth from "@/components/withAuth";
 import { serverTimestamp, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { EmailAuthProvider, GoogleAuthProvider } from "firebase/auth";
-import { useApp } from "@/lib/useApp";
+import { useProject } from "@/lib/useProject";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "@/components/withDoctorReport";
@@ -26,7 +26,7 @@ const NoneConfigured = withDoctorReport("provider/none-configured", () => {
   return (
     <Alert variant="destructive">
       <ExclamationTriangleIcon className="h-4 w-4" />
-      <AlertTitle>No providers configured for this app yet.</AlertTitle>
+      <AlertTitle>No providers configured for this project yet.</AlertTitle>
       <AlertDescription>Add a provider to get started.</AlertDescription>
     </Alert>
   );
@@ -41,7 +41,7 @@ const NotEnabled = withDoctorReport("provider/not-enabled", ({ message }) => {
     <Alert variant="destructive">
       <ExclamationTriangleIcon className="h-4 w-4" />
       <AlertTitle>
-        The provider {providerName} is not enabled for this app.
+        The provider {providerName} is not enabled for this project.
       </AlertTitle>
       <AlertDescription>
         You must enable the provider {providerName} in the Firebase console
@@ -81,8 +81,8 @@ const FormSchema = z.object({
 
 type FormSchema = z.infer<typeof FormSchema>;
 
-const ProvidersPage = ({ params }: { params: { appId: string } }) => {
-  const { app, doctor, ref } = useApp(params.appId);
+const ProvidersPage = ({ params }: { params: { projectId: string } }) => {
+  const { project, doctor, ref } = useProject(params.projectId);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -94,9 +94,9 @@ const ProvidersPage = ({ params }: { params: { appId: string } }) => {
   useEffect(() => {
     form.setValue(
       "providerIds",
-      app?.portal_config.providers?.map((p) => p.provider_id) ?? [],
+      project?.portal_config.providers?.map((p) => p.provider_id) ?? [],
     );
-  }, [form, app?.portal_config.providers]);
+  }, [form, project?.portal_config.providers]);
 
   const [isBusy, setIsBusy] = useState(false);
   const handleSubmit = async (values: FormSchema) => {
@@ -118,7 +118,7 @@ const ProvidersPage = ({ params }: { params: { appId: string } }) => {
     }
   };
 
-  if (!app || doctor === undefined) return <p>Loading...</p>;
+  if (!project || doctor === undefined) return <p>Loading...</p>;
 
   return (
     <main className="flex flex-col gap-4">

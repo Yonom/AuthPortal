@@ -8,14 +8,18 @@ import {
 import Link from "next/link";
 import { FC } from "react";
 
-type AppCardProps = {
-  appId: string;
+type ProjectCardProps = {
+  projectId: string;
   name: string;
   type: "development" | "production";
 };
-export const AppCard: FC<AppCardProps> = ({ appId, name, type }) => {
+export const ProjectCard: FC<ProjectCardProps> = ({
+  projectId,
+  name,
+  type,
+}) => {
   return (
-    <Link href={`/apps/${appId}/setup`}>
+    <Link href={`/projects/${projectId}/setup`}>
       <Card className="w-80 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900">
         <CardHeader>
           <CardTitle>{name}</CardTitle>

@@ -64,7 +64,7 @@ const converter = <T>() => ({
 const dataPoint = <T>(collectionPath: string) =>
   collection(firestore, collectionPath).withConverter(converter<T>());
 
-type FirestoreAppDocument = ConfigKVObject & {
+type Project = ConfigKVObject & {
   admin_config: {
     name: string;
     members: string[];
@@ -80,15 +80,20 @@ export type DoctorReport = {
 };
 
 type FirestoreDomainDocument = {
-  app_id: string;
+  project_id: string;
   created_at: Timestamp;
   updated_at: Timestamp;
 };
 
 const firestoreCollections = {
-  apps: dataPoint<FirestoreAppDocument>("apps"),
-  getDoctorReport: (appId: string) =>
-    doc(dataPoint<DoctorReport>("apps"), appId, "metadata", "doctor_report"),
+  projects: dataPoint<Project>("projects"),
+  getDoctorReport: (projectId: string) =>
+    doc(
+      dataPoint<DoctorReport>("projects"),
+      projectId,
+      "metadata",
+      "doctor_report",
+    ),
   domains: dataPoint<FirestoreDomainDocument>("domains"),
 };
 

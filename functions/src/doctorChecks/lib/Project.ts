@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // TODO duplicate
-export const FirestoreAppDocument = z.object({
+export const Project = z.object({
   admin_config: z.object({
     name: z.string(),
     members: z.array(z.string()),
@@ -26,4 +26,4 @@ export const FirestoreAppDocument = z.object({
   ),
 });
 
-export type FirestoreAppDocument = z.infer<typeof FirestoreAppDocument>;
+export type Project = z.infer<typeof Project>;

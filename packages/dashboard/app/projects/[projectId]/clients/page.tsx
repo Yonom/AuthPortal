@@ -44,11 +44,11 @@ const NoRedirectUris = withDoctorReport("client/no-redirect-uris", () => {
   );
 });
 
-const ClientsPage = ({ params }: { params: { appId: string } }) => {
-  const { project, doctor } = useProject(params.appId);
+const ClientsPage = ({ params }: { params: { projectId: string } }) => {
+  const { project, doctor } = useProject(params.projectId);
   const domainRef = query(
     firestoreCollections.domains,
-    where("app_id", "==", params.appId),
+    where("project_id", "==", params.projectId),
     limit(1),
   );
   const [domains] = useCollection(domainRef);

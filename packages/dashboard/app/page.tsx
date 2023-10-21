@@ -7,7 +7,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { auth, firestoreCollections } from "../lib/firebase";
 import { query, where } from "firebase/firestore";
 import withAuth from "../components/withAuth";
-import { AppCard } from "./AppCard";
+import { ProjectCard } from "./ProjectCard";
 
 function Home() {
   const router = useRouter();
@@ -21,7 +21,7 @@ function Home() {
     !user
       ? null
       : query(
-          firestoreCollections.apps,
+          firestoreCollections.projects,
           where("admin_config.members", "array-contains", user.uid),
         ),
   );
@@ -34,9 +34,9 @@ function Home() {
       </div>
       <div className="flex flex-row gap-4">
         {values?.docs.map((v) => (
-          <AppCard
+          <ProjectCard
             key={v.id}
-            appId={v.id}
+            projectId={v.id}
             name={v.data().admin_config.name}
             type="development"
           />

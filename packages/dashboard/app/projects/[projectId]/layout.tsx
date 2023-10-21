@@ -6,33 +6,32 @@ import { FC } from "react";
 import { firestore, firestoreCollections } from "@/lib/firebase";
 import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
+import { useProject } from "@/lib/useProject";
 
-type AppLayoutProps = {
+type ProjectLayoutProps = {
   children: React.ReactNode;
-  params: { appId: string };
+  params: { projectId: string };
 };
 
-const AppLayout: FC<AppLayoutProps> = ({ params, children }) => {
-  const [app, loading] = useDocumentData(
-    doc(firestoreCollections.apps, params.appId),
-  );
+const ProjectLayout: FC<ProjectLayoutProps> = ({ params, children }) => {
+  const { project } = useProject(params.projectId);
 
-  if (!app) return <p>Loading...</p>;
+  if (!project) return <p>Loading...</p>;
 
   return (
     <div className="hidden space-y-6 p-10 pb-16 md:block">
       <div className="space-y-0.5">
         <h2 className="text-2xl font-bold tracking-tight">
-          {app.admin_config.name}
+          {project.admin_config.name}
         </h2>
       </div>
       <Separator className="my-6" />
       <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
         <aside className="-mx-4 lg:w-1/5">
           <ConfigNav
-            appId={params.appId}
+            projectId={params.projectId}
             setupComplete={
-              !!Object.keys(app.portal_config.firebase_config).length
+              !!Object.keys(project.portal_config.firebase_config).length
             }
           />
         </aside>
@@ -42,4 +41,4 @@ const AppLayout: FC<AppLayoutProps> = ({ params, children }) => {
   );
 };
 
-export default AppLayout;
+export default ProjectLayout;

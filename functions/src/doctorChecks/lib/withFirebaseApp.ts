@@ -1,12 +1,12 @@
 import { FirebaseApp, deleteApp, initializeApp } from "firebase/app";
-import { FirestoreAppDocument } from "./FirestoreAppDocument";
+import { Project } from "./Project";
 
 export const withFirebaseApp = async <T>(
-  appDoc: FirestoreAppDocument,
+  project: Project,
   callback: (app: FirebaseApp) => Promise<T>,
 ): Promise<T> => {
   const app = initializeApp(
-    appDoc.portal_config.firebase_config,
+    project.portal_config.firebase_config,
     Math.random().toString(),
   );
 

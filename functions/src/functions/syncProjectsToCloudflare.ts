@@ -1,12 +1,8 @@
 import { onDocumentWritten } from "firebase-functions/v2/firestore";
 import { getFirestore } from "firebase-admin/firestore";
 
-// TODO: cache eviction on Vercel and Cloudflare
-// TODO: domain addition, domain removal, app removal
-// TODO: free up domains on app removal
-
-export const syncAppsToCloudflare = onDocumentWritten(
-  "apps/{app_id}",
+export const syncProjectsToCloudflare = onDocumentWritten(
+  "projects/{project_id}",
   async (request) => {
     const { API_KEY } = process.env;
     if (!API_KEY) {
@@ -19,7 +15,7 @@ export const syncAppsToCloudflare = onDocumentWritten(
     const { portal_config, clients } = data;
     const domainSnapshots = await getFirestore()
       .collection("domains")
-      .where("app_id", "==", request.params.app_id)
+      .where("project_id", "==", request.params.project_id)
       .get();
     const domains = domainSnapshots.docs.map((d) => d.id);
     const payload = {

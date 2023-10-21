@@ -1,8 +1,8 @@
 import { DoctorReport } from "./lib/DoctorReport";
-import { FirestoreAppDocument } from "./lib/FirestoreAppDocument";
+import { Project } from "./lib/Project";
 
-export const checkClients = (appDoc: FirestoreAppDocument) => {
-  const { clients } = appDoc;
+export const checkClients = (project: Project) => {
+  const { clients } = project;
   if (Object.keys(clients).length === 0) {
     return DoctorReport.fromMessage({
       type: "client/none-configured",

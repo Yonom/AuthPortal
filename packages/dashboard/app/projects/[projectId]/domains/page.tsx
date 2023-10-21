@@ -4,7 +4,7 @@ import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
 import { doc, limit, query, where } from "firebase/firestore";
 import { firestoreCollections } from "@/lib/firebase";
 import { FC } from "react";
-import { useApp } from "@/lib/useApp";
+import { useProject } from "@/lib/useProject";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "@/components/withDoctorReport";
@@ -13,7 +13,7 @@ const NoneConfigured = withDoctorReport("domain/none-configured", () => {
   return (
     <Alert variant="destructive">
       <ExclamationTriangleIcon className="h-4 w-4" />
-      <AlertTitle>No domains configured for this app yet.</AlertTitle>
+      <AlertTitle>No domains configured for this project yet.</AlertTitle>
       <AlertDescription>Add a domain to get started.</AlertDescription>
     </Alert>
   );
@@ -53,16 +53,16 @@ const NotWhitelistedForOauth = withDoctorReport(
   },
 );
 
-const DomainsPage = ({ params }: { params: { appId: string } }) => {
-  const { app, doctor } = useApp(params.appId);
+const DomainsPage = ({ params }: { params: { projectId: string } }) => {
+  const { project, doctor } = useProject(params.projectId);
   const domainRef = query(
     firestoreCollections.domains,
-    where("app_id", "==", params.appId),
+    where("project_id", "==", params.projectId),
     limit(1),
   );
   const [domains] = useCollection(domainRef);
 
-  if (!app || !domains || doctor === undefined) return <p>Loading...</p>;
+  if (!project || !domains || doctor === undefined) return <p>Loading...</p>;
 
   return (
     <main className="flex flex-col gap-4">

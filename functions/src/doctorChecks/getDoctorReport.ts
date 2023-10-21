@@ -1,41 +1,38 @@
 import { DoctorReport } from "./lib/DoctorReport";
-import { FirestoreAppDocument } from "./lib/FirestoreAppDocument";
+import { Project } from "./lib/Project";
 import { checkFirebaseConfigSchema, checkFirebaseConfig } from "./config";
 import { getDomains } from "./lib/Domain";
 import { checkClients } from "./client";
 import { checkDomains } from "./domain";
 import { ensureHasProviders, checkProviders } from "./provider";
 
-const checkDocSchema = (appDoc: FirestoreAppDocument) => {
-  const res = FirestoreAppDocument.safeParse(appDoc);
+const checkProjectSchema = (project: Project) => {
+  const res = Project.safeParse(project);
   if (res.success) return DoctorReport.EMPTY;
 
   return DoctorReport.fromMessage({
     type: "internal-error",
-    message: `App document is invalid: ${res.error.message}`,
+    message: `Project document is invalid: ${res.error.message}`,
   });
 };
 
-export const getDoctorReport = async (
-  appId: string,
-  appDoc: FirestoreAppDocument,
-) => {
-  const domains = await getDomains(appId);
+export const getDoctorReport = async (projectId: string, project: Project) => {
+  const domains = await getDomains(projectId);
 
   const report = new DoctorReport();
   try {
     report
-      .concat(checkDocSchema(appDoc))
+      .concat(checkProjectSchema(project))
       // config/*
-      .concat(checkFirebaseConfigSchema(appDoc))
-      .concat(await checkFirebaseConfig(appDoc))
+      .concat(checkFirebaseConfigSchema(project))
+      .concat(await checkFirebaseConfig(project))
       // provider/*
-      .concat(ensureHasProviders(appDoc))
-      .concat(await checkProviders(appDoc, domains))
+      .concat(ensureHasProviders(project))
+      .concat(await checkProviders(project, domains))
       // domain/*
-      .concat(await checkDomains(appDoc, domains))
+      .concat(await checkDomains(project, domains))
       // client/*
-      .concat(checkClients(appDoc));
+      .concat(checkClients(project));
   } catch (ex: unknown) {
     if (ex instanceof DoctorReport) {
       report.concat(ex);

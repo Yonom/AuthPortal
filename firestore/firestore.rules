@@ -12,13 +12,13 @@ service cloud.firestore {
         request.resource.data.keys().hasOnly(allAllowedFields);
     }
 
-    function hasAccessToApp(app_id) {
+    function hasAccessToProject(project_id) {
       return request.auth != null && 
-        request.auth.uid in get(/databases/$(database)/documents/apps/$(app_id)).data.admin_config.members
+        request.auth.uid in get(/databases/$(database)/documents/projects/$(project_id)).data.admin_config.members
     }
   
-    match /apps/{app_id} {
-      function hasAccessToAppLocal() {
+    match /projects/{project_id} {
+      function hasAccessToProjectLocal() {
         return request.auth != null &&
           (
             (request.method != 'create' && request.method != 'update') ||
@@ -30,27 +30,27 @@ service cloud.firestore {
           )
       }
       
-      function validateAppObject() {
+      function validateProjectObject() {
       	return verifyFields(["admin_config", "portal_config", "clients", "created_at", "updated_at"], []) &&
         	verifyTimestamp(request.resource.data.updated_at)
       }
       
       allow create:
-        if hasAccessToAppLocal() &&
-          validateAppObject() &&
+        if hasAccessToProjectLocal() &&
+          validateProjectObject() &&
           verifyTimestamp(request.resource.data.created_at)
       
       allow update:
-        if hasAccessToAppLocal() &&
-          validateAppObject()
+        if hasAccessToProjectLocal() &&
+          validateProjectObject()
         	
     	
       allow read, delete:
-        if hasAccessToAppLocal()
+        if hasAccessToProjectLocal()
 
       match /metadata/doctor_report {
         allow read:
-          if hasAccessToApp(app_id)
+          if hasAccessToProject(project_id)
       }
     }
     
@@ -61,13 +61,13 @@ service cloud.firestore {
       
       allow create:
         if isDomain() &&
-          verifyFields(["app_id", "created_at", "updated_at"], []) &&
+          verifyFields(["project_id", "created_at", "updated_at"], []) &&
           verifyTimestamp(request.resource.data.created_at) &&
         	verifyTimestamp(request.resource.data.updated_at) &&
-          hasAccessToApp(request.resource.data.app_id)
+          hasAccessToProject(request.resource.data.project_id)
       
       allow delete, read: 
-        if hasAccessToApp(resource.data.app_id);
+        if hasAccessToProject(resource.data.project_id);
     }
   }
 }

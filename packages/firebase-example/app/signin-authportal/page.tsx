@@ -1,6 +1,5 @@
 "use client";
 
-import { initializeApp } from "firebase/app";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { authportal } from "../authportal";
