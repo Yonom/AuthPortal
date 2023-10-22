@@ -32,7 +32,7 @@ function Home() {
       <div>
         <Button onClick={handleNew}>New Project</Button>
       </div>
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-row flex-wrap gap-4">
         {values?.docs.map((v) => (
           <ProjectCard
             key={v.id}
