@@ -64,7 +64,7 @@ const converter = <T>() => ({
 const dataPoint = <T>(collectionPath: string) =>
   collection(firestore, collectionPath).withConverter(converter<T>());
 
-type Project = ConfigKVObject & {
+export type Project = ConfigKVObject & {
   admin_config: {
     name: string;
     members: string[];

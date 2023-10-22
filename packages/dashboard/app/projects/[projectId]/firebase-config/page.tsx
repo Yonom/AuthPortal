@@ -95,8 +95,7 @@ const FormSchema = z.object({
 type FormSchema = z.infer<typeof FormSchema>;
 
 const SetupPage = ({ params }: { params: { projectId: string } }) => {
-  const ref = doc(firestoreCollections.projects, params.projectId);
-  const { project, doctor } = useProject(params.projectId);
+  const { project, doctor, projectRef } = useProject(params.projectId);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -119,7 +118,7 @@ const SetupPage = ({ params }: { params: { projectId: string } }) => {
     setIsBusy(true);
     try {
       await setDoc(
-        ref,
+        projectRef,
         {
           portal_config: { firebase_config: configStrToConfig(values.config) },
           updated_at: serverTimestamp(),

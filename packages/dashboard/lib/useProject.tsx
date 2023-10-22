@@ -9,7 +9,7 @@ import { noSSR } from "@/lib/noSSR";
 export const useProject = (projectId: string) => {
   noSSR();
 
-  const ref = useMemo(
+  const projectRef = useMemo(
     () => doc(firestoreCollections.projects, projectId),
     [projectId],
   );
@@ -17,17 +17,17 @@ export const useProject = (projectId: string) => {
     () => firestoreCollections.getDoctorReport(projectId),
     [projectId],
   );
-  const [project] = useDocumentData(ref);
+  const [project] = useDocumentData(projectRef);
   const [doctor] = useDocumentData(doctorRef);
 
   if (
     project?.updated_at &&
     doctor &&
     project.updated_at.seconds > doctor.created_at.seconds &&
-    new Date().getTime() - project.updated_at.toMillis() < 1000 * 10 // 10 second timeout
+    new Date().getTime() - project.updated_at.toMillis() < 1000 * 30 // 30 second timeout
   ) {
-    return { project, ref, doctor: null };
+    return { project, projectRef, doctor: null };
   }
 
-  return { project, doctor, ref };
+  return { project, doctor, projectRef };
 };

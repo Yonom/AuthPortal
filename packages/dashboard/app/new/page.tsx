@@ -140,7 +140,7 @@ const NewPage = () => {
         domain + ".authportal.site",
         userId,
       );
-      router.push(`/projects/${newProjectId}/setup`); // Redirect to the new project's config page
+      router.push(`/projects/${newProjectId}/firebase-config`); // Redirect to the new project's config page
     } catch (error) {
       console.error("Error adding new project: ", error);
       setLoading(false);

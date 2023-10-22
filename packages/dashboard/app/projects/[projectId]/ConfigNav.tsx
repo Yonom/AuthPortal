@@ -24,7 +24,7 @@ const ConfigNav: FC<ConfigNavParams> = ({
     return [
       {
         title: "Firebase Configuration",
-        href: `/projects/${projectId}/setup`,
+        href: `/projects/${projectId}/firebase-config`,
         hasWarnings: hasWarnings("config"),
       },
       setupComplete && {

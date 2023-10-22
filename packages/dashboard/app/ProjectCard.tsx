@@ -19,7 +19,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   type,
 }) => {
   return (
-    <Link href={`/projects/${projectId}/setup`}>
+    <Link href={`/projects/${projectId}/firebase-config`}>
       <Card className="w-80 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900">
         <CardHeader>
           <CardTitle>{name}</CardTitle>

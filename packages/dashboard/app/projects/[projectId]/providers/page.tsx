@@ -82,7 +82,7 @@ const FormSchema = z.object({
 type FormSchema = z.infer<typeof FormSchema>;
 
 const ProvidersPage = ({ params }: { params: { projectId: string } }) => {
-  const { project, doctor, ref } = useProject(params.projectId);
+  const { project, doctor, projectRef } = useProject(params.projectId);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -104,7 +104,7 @@ const ProvidersPage = ({ params }: { params: { projectId: string } }) => {
     try {
       const providers = values.providerIds.map((p) => ({ provider_id: p }));
       await setDoc(
-        ref,
+        projectRef,
         { portal_config: { providers }, updated_at: serverTimestamp() },
         { merge: true },
       );
