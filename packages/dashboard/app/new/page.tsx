@@ -25,6 +25,23 @@ const FormSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
+  domain: z
+    .string()
+    .min(6, {
+      message: "Domain must be at least 6 characters.",
+    })
+    .max(63, {
+      message: "Domain must be at most 60 characters.",
+    })
+    .regex(/[a-z0-9]$/, {
+      message: "Domain must end with a letter or number.",
+    })
+    .regex(/^[a-z]/, {
+      message: "Domain must start with a letter.",
+    })
+    .regex(/^[a-z][a-z0-9-]{4,60}[a-z0-9]$/, {
+      message: "Domain must only contain letters, numbers, and dashes.",
+    }),
 });
 
 type FormSchema = z.infer<typeof FormSchema>;
@@ -117,6 +134,26 @@ const NewPage = () => {
                 <FormDescription>
                   This is for your own records and will not be displayed to your
                   users.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="domain"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Domain</FormLabel>
+                <FormControl>
+                  <div>
+                    <Input placeholder="my-project" {...field} />
+                    .authportal.site
+                  </div>
+                </FormControl>
+                <FormDescription>
+                  This is the domain that your users will see while they sign
+                  in. You can setup a custom domain later.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

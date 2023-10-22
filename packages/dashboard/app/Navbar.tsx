@@ -3,6 +3,8 @@ import logo from "./logo.svg";
 import { ModeToggle } from "@/components/mode-toggle";
 import Link from "next/link";
 import { LogoutButton } from "./LogoutButton";
+import { AvatarImage } from "@/components/ui/avatar";
+import { UserNav } from "./UserNav";
 
 export const Navbar = () => {
   return (
@@ -11,8 +13,9 @@ export const Navbar = () => {
         <Image src={logo} alt="Logo" />
       </Link>
       <div className="flex gap-4">
-        <ModeToggle />
-        <LogoutButton />
+        <UserNav />
+        {/* <ModeToggle />
+        <LogoutButton /> */}
       </div>
     </div>
   );

@@ -6,19 +6,24 @@ import { Project } from "../doctorChecks/lib/Project";
 export const runDoctor = onDocumentWritten(
   "projects/{project_id}",
   async (request) => {
+    const reportRef = getFirestore().doc(
+      `projects/${request.params.project_id}/metadata/doctor_report`,
+    );
+
     const data = request.data?.after.data();
-    if (!data) return;
+    if (!data) {
+      await reportRef.delete();
+      return;
+    }
 
     const report = await getDoctorReport(
       request.params.project_id,
       data as Project,
     );
 
-    getFirestore()
-      .doc(`projects/${request.params.project_id}/metadata/doctor_report`)
-      .set({
-        messages: report.messages,
-        created_at: FieldValue.serverTimestamp(),
-      });
+    await reportRef.set({
+      messages: report.messages,
+      created_at: FieldValue.serverTimestamp(),
+    });
   },
 );
