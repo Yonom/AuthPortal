@@ -76,6 +76,21 @@ const AuthNotEnabled = withDoctorReport("config/auth-not-enabled", () => {
   );
 });
 
+const InternalError = withDoctorReport("internal-error", ({ message }) => {
+  return (
+    <Alert variant="destructive">
+      <ExclamationTriangleIcon className="h-4 w-4" />
+      <AlertTitle>
+        An internal error has occured while validating your configuration
+      </AlertTitle>
+      <AlertDescription>
+        Please try again later or contact support. <br />
+        Error message: {message.message}
+      </AlertDescription>
+    </Alert>
+  );
+});
+
 const FormSchema = z.object({
   config: z.string().refine(
     (s) => {
@@ -145,6 +160,7 @@ const SetupPage = ({ params }: { params: { projectId: string } }) => {
       <MalformedConfig report={doctor} />
       <InvalidAPIKey report={doctor} />
       <AuthNotEnabled report={doctor} />
+      <InternalError report={doctor} />
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">

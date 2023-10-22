@@ -19,13 +19,15 @@ const ConfigNav: FC<ConfigNavParams> = ({
 }) => {
   const sidebarNavItems = useMemo(() => {
     const hasWarnings = (ns: string) =>
-      !!report?.messages.some((m) => m.type.startsWith(ns + "/"));
-    console.log(report);
+      !!report?.messages.some(
+        (m) => m.type === ns || m.type.startsWith(ns + "/"),
+      );
+
     return [
       {
         title: "Firebase Configuration",
         href: `/projects/${projectId}/firebase-config`,
-        hasWarnings: hasWarnings("config"),
+        hasWarnings: hasWarnings("config") || hasWarnings("internal-error"),
       },
       setupComplete && {
         title: "Sign-in Methods",
