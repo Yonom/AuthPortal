@@ -8,6 +8,7 @@ import { useProject } from "@/lib/useProject";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "@/components/withDoctorReport";
+import { Button } from "@/components/ui/button";
 
 const NoneConfigured = withDoctorReport("domain/none-configured", () => {
   return (
@@ -45,8 +46,15 @@ const NotWhitelistedForOauth = withDoctorReport(
         <ExclamationTriangleIcon className="h-4 w-4" />
         <AlertTitle>Domain not whitelisted for OAuth</AlertTitle>
         <AlertDescription>
-          Please add {message.domain} to the authorized domains in the Firebase
-          Authentication settings.
+          <p>
+            Please add {message.domain} to the authorized domains in the
+            Firebase Authentication settings.
+          </p>
+          <div className="text-end">
+            <Button variant="outline" onClick={() => {}}>
+              Check again
+            </Button>
+          </div>
         </AlertDescription>
       </Alert>
     );
