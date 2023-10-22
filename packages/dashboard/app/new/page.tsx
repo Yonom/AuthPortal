@@ -13,13 +13,21 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputWithText } from "@/components/ui/input-with-text";
 import { useForm } from "react-hook-form";
-import { auth, firestoreCollections } from "../../lib/firebase";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { useState } from "react";
+import { auth, firestore, firestoreCollections } from "../../lib/firebase";
+import {
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import withAuth from "../../components/withAuth";
 import { _generateRandomString } from "@authportal/core/signIn/utils/crypto";
+import { FirebaseError } from "firebase/app";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -30,18 +38,43 @@ const FormSchema = z.object({
     .min(6, {
       message: "Domain must be at least 6 characters.",
     })
-    .max(63, {
-      message: "Domain must be at most 60 characters.",
-    })
-    .regex(/[a-z0-9]$/, {
-      message: "Domain must end with a letter or number.",
+    .max(30, {
+      message: "Domain must be at most 30 characters.",
     })
     .regex(/^[a-z]/, {
       message: "Domain must start with a letter.",
     })
-    .regex(/^[a-z][a-z0-9-]{4,60}[a-z0-9]$/, {
+    .regex(/[a-z0-9]$/, {
+      message: "Domain must end with a letter or number.",
+    })
+    .regex(/^[a-z][a-z0-9-]{4,28}[a-z0-9]$/, {
       message: "Domain must only contain letters, numbers, and dashes.",
-    }),
+    })
+    .regex(/^(?:[a-z0-9]-?)+$/, {
+      message: "Domain cannot have two dashes in a row.",
+    })
+    .refine(
+      async (d) => {
+        try {
+          // updating a non-existing document will fail with not-found, otherwise permission-denied
+          await updateDoc(
+            doc(firestoreCollections.domains, d + ".authportal.site"),
+            {},
+          );
+
+          // unexpected success, but it implies that the domain is taken
+          return false;
+        } catch (ex: unknown) {
+          if (!(ex instanceof FirebaseError)) throw ex;
+          if (ex.code === "not-found") return true;
+          if (ex.code === "permission-denied") return false;
+          throw ex;
+        }
+      },
+      {
+        message: "Domain is already taken.",
+      },
+    ),
 });
 
 type FormSchema = z.infer<typeof FormSchema>;
@@ -51,10 +84,11 @@ const NewPage = () => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
+      domain: "",
     },
   });
 
-  const addProject = async (name: string, userId: string) => {
+  const addProject = async (name: string, domain: string, userId: string) => {
     const newProjectRef = doc(firestoreCollections.projects);
 
     await setDoc(newProjectRef, {
@@ -76,12 +110,6 @@ const NewPage = () => {
       updated_at: serverTimestamp(),
     });
 
-    const domain =
-      _generateRandomString()
-        .replace("-", "")
-        .replace("_", "")
-        .substring(0, 16)
-        .toLowerCase() + ".authportal.site";
     const domainRef = doc(firestoreCollections.domains, domain);
     await setDoc(domainRef, {
       project_id: newProjectRef.id,
@@ -97,7 +125,7 @@ const NewPage = () => {
   const router = useRouter();
 
   const handleSubmit = async (values: FormSchema) => {
-    const { name } = values;
+    const { name, domain } = values;
     const userId = auth.currentUser?.uid;
 
     if (!userId) {
@@ -107,7 +135,11 @@ const NewPage = () => {
     setLoading(true);
 
     try {
-      const newProjectId = await addProject(name, userId);
+      const newProjectId = await addProject(
+        name,
+        domain + ".authportal.site",
+        userId,
+      );
       router.push(`/projects/${newProjectId}/setup`); // Redirect to the new project's config page
     } catch (error) {
       console.error("Error adding new project: ", error);
@@ -115,13 +147,42 @@ const NewPage = () => {
     }
   };
 
+  const name = form.watch("name");
+  const domainOverride = useRef(false);
+  useEffect(() => {
+    if (domainOverride.current) return;
+
+    let validDomain = name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
+      .replace(/-$/g, "")
+      .replace(/^([^a-z])/g, "project-$1")
+      .substring(0, 30);
+
+    if (name && validDomain.length < 6) {
+      validDomain =
+        validDomain +
+        "-" +
+        _generateRandomString()
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "")
+          .substring(0, 5);
+    }
+
+    form.setValue("domain", validDomain);
+  }, [form, name]);
+
   return (
     <main>
       <h2 className="mb-4 text-3xl font-bold tracking-tight">
         Create a New Project
       </h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="max-w-lg space-y-8"
+        >
           <FormField
             control={form.control}
             name="name"
@@ -146,14 +207,21 @@ const NewPage = () => {
               <FormItem>
                 <FormLabel>Domain</FormLabel>
                 <FormControl>
-                  <div>
-                    <Input placeholder="my-project" {...field} />
-                    .authportal.site
-                  </div>
+                  <InputWithText
+                    placeholder="my-project"
+                    {...field}
+                    onChange={(...e) => {
+                      domainOverride.current = true;
+                      field.onChange(...e);
+                    }}
+                    suffix=".authportal.site"
+                  />
                 </FormControl>
                 <FormDescription>
                   This is the domain that your users will see while they sign
-                  in. You can setup a custom domain later.
+                  in.
+                  <br />
+                  You can setup a custom domain later.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

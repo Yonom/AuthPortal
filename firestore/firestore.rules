@@ -59,7 +59,18 @@ service cloud.firestore {
     
     match /domains/{domain} {
       function isDomain() {
-        return domain.matches("^(?:[a-z0-9](?:[a-z0-9-]{0,60}[a-z0-9])?\\.){1,5}(?:[a-z][a-z0-9-]{0,60}[a-z0-9])$");
+        // valid (sub)domain with a max depth of 6
+        let genericDomainValidation = domain.matches("^(?:[a-z0-9](?:[a-z0-9-]{0,60}[a-z0-9])?\\.){1,5}(?:[a-z][a-z0-9-]{0,60}[a-z0-9])$");
+
+        // stricter rules for *.authportal.site (no subdomains, no numbers at start, no repeated dashes, min 6 chars, max 30 chars)
+        let authportalSiteValidation = !domain.matches(".authportal.site$") || (
+          domain.matches("^[a-z][a-z0-9-]{4,28}[a-z0-9].authportal.site$") &&
+          domain.matches("^(?:[a-z0-9]-?)+.authportal.site$") 
+        );
+
+        let reservedDomainValidation = !domain.matches(".authportal.dev$") && domain != "authportal.dev";
+
+        return genericDomainValidation && authportalSiteValidation && reservedDomainValidation;
       }
       
       function validateDomainObject() {
@@ -75,17 +86,16 @@ service cloud.firestore {
       
       allow update:
         if
-          hasAccessToProject(resource.data.project_id) &&
-          validateDomainObject() &&
-          request.resource.data.created_at == resource.data.created_at;
+          // hack to allow checking for domain availability
+          resource == null || 
+          (
+            hasAccessToProject(resource.data.project_id) &&
+            validateDomainObject() &&
+            request.resource.data.created_at == resource.data.created_at
+          );
 
       allow delete, read: 
         if hasAccessToProject(resource.data.project_id);
-
-      match /metadata/exists {
-        allow read:
-          if true;
-      }
     }
   }
 }
