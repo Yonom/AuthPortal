@@ -59,16 +59,16 @@ const NewPage = () => {
       updated_at: serverTimestamp(),
     });
 
-    const domainRef = doc(
-      firestoreCollections.domains,
+    const domain =
       _generateRandomString()
         .replace("-", "")
         .replace("_", "")
         .substring(0, 16)
-        .toLowerCase() + ".authportal.site",
-    );
+        .toLowerCase() + ".authportal.site";
+    const domainRef = doc(firestoreCollections.domains, domain);
     await setDoc(domainRef, {
       project_id: newProjectRef.id,
+      helper_domain: domain,
       created_at: serverTimestamp(),
       updated_at: serverTimestamp(),
     });

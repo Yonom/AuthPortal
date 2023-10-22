@@ -3,11 +3,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {
     href: string;
     title: string;
+    hasWarnings: boolean;
   }[];
 }
 
@@ -30,10 +32,13 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
             pathname === item.href
               ? "bg-zinc-100 dark:bg-zinc-900"
               : "hover:bg-transparent hover:bg-zinc-100 hover:underline",
-            "justify-start",
+            "justify-between",
           )}
         >
           {item.title}
+          {item.hasWarnings && (
+            <ExclamationTriangleIcon className="ml-2 inline h-4 w-4 text-red-600 dark:text-red-600" />
+          )}
         </Link>
       ))}
     </nav>

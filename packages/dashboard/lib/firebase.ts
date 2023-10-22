@@ -81,6 +81,7 @@ export type DoctorReport = {
 
 type FirestoreDomainDocument = {
   project_id: string;
+  helper_domain?: string;
   created_at: Timestamp;
   updated_at: Timestamp;
 };

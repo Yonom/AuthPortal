@@ -3,9 +3,6 @@
 import { Separator } from "@/components/ui/separator";
 import ConfigNav from "./ConfigNav";
 import { FC } from "react";
-import { firestore, firestoreCollections } from "@/lib/firebase";
-import { doc } from "firebase/firestore";
-import { useDocumentData } from "react-firebase-hooks/firestore";
 import { useProject } from "@/lib/useProject";
 
 type ProjectLayoutProps = {
@@ -14,9 +11,9 @@ type ProjectLayoutProps = {
 };
 
 const ProjectLayout: FC<ProjectLayoutProps> = ({ params, children }) => {
-  const { project } = useProject(params.projectId);
+  const { project, doctor } = useProject(params.projectId);
 
-  if (!project) return <p>Loading...</p>;
+  if (!project || doctor === undefined) return <p>Loading...</p>;
 
   return (
     <div className="space-y-6 p-10 pb-16">
@@ -33,6 +30,7 @@ const ProjectLayout: FC<ProjectLayoutProps> = ({ params, children }) => {
             setupComplete={
               !!Object.keys(project.portal_config.firebase_config).length
             }
+            report={doctor}
           />
         </aside>
         <div className="flex-1 lg:max-w-2xl">{children}</div>

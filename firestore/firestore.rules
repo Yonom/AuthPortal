@@ -14,60 +14,78 @@ service cloud.firestore {
 
     function hasAccessToProject(project_id) {
       return request.auth != null && 
-        request.auth.uid in get(/databases/$(database)/documents/projects/$(project_id)).data.admin_config.members
+        request.auth.uid in get(/databases/$(database)/documents/projects/$(project_id)).data.admin_config.members;
     }
   
     match /projects/{project_id} {
       function hasAccessToProjectLocal() {
         return request.auth != null &&
           (
-            (request.method != 'create' && request.method != 'update') ||
+            (request.method != 'create' && request.method != 'update') || 
+            // on create, update - verify new members list
             request.auth.uid in request.resource.data.admin_config.members
           ) &&
           (
             request.method == 'create' ||
+            // on read, update, delete - verify existing members list
             request.auth.uid in resource.data.admin_config.members
-          )
+          );
       }
       
       function validateProjectObject() {
       	return verifyFields(["admin_config", "portal_config", "clients", "created_at", "updated_at"], []) &&
-        	verifyTimestamp(request.resource.data.updated_at)
+        	verifyTimestamp(request.resource.data.updated_at);
       }
       
       allow create:
         if hasAccessToProjectLocal() &&
           validateProjectObject() &&
-          verifyTimestamp(request.resource.data.created_at)
+          verifyTimestamp(request.resource.data.created_at);
       
       allow update:
         if hasAccessToProjectLocal() &&
-          validateProjectObject()
+          validateProjectObject() &&
+          request.resource.data.created_at == resource.data.created_at;
         	
     	
       allow read, delete:
-        if hasAccessToProjectLocal()
+        if hasAccessToProjectLocal();
 
       match /metadata/doctor_report {
         allow read:
-          if hasAccessToProject(project_id)
+          if hasAccessToProject(project_id);
       }
     }
     
     match /domains/{domain} {
       function isDomain() {
-        return domain.matches("^(?:[a-z0-9](?:[a-z0-9-]{0,60}[a-z0-9])?\\.){1,5}(?:[a-z][a-z0-9-]{0,60}[a-z0-9])$")
+        return domain.matches("^(?:[a-z0-9](?:[a-z0-9-]{0,60}[a-z0-9])?\\.){1,5}(?:[a-z][a-z0-9-]{0,60}[a-z0-9])$");
+      }
+      
+      function validateDomainObject() {
+      	return verifyFields(["project_id", "created_at", "updated_at"], ["helper_domain", "shipped_at"]) &&
+        	verifyTimestamp(request.resource.data.updated_at);
       }
       
       allow create:
         if isDomain() &&
-          verifyFields(["project_id", "created_at", "updated_at"], []) &&
-          verifyTimestamp(request.resource.data.created_at) &&
-        	verifyTimestamp(request.resource.data.updated_at) &&
-          hasAccessToProject(request.resource.data.project_id)
+          hasAccessToProject(request.resource.data.project_id) &&
+          validateDomainObject() &&
+          verifyTimestamp(request.resource.data.created_at);
       
+      allow update:
+        if
+          hasAccessToProject(resource.data.project_id) &&
+          validateDomainObject() &&
+          request.resource.data.created_at == resource.data.created_at;
+
       allow delete, read: 
         if hasAccessToProject(resource.data.project_id);
+
+      match /metadata/exists {
+        allow read:
+          if true;
+      }
     }
   }
 }
