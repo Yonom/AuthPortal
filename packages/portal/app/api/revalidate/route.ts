@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
+import { fetchConfig } from "@/components/withConfigPage";
 
 const withAuthorization = (req: NextRequest) => {
   const authHeader = req.headers.get("Authorization");
@@ -19,12 +20,17 @@ export async function POST(request: NextRequest) {
   if (!withAuthorization(request))
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const tag = request.nextUrl.searchParams.get("tag");
-  if (!tag) {
-    return NextResponse.json({ message: "Missing tag param" }, { status: 400 });
+  const domain = request.nextUrl.searchParams.get("domain");
+  if (!domain) {
+    return NextResponse.json(
+      { message: "Missing domain param" },
+      { status: 400 },
+    );
   }
 
-  revalidateTag(tag);
+  revalidateTag("config-" + domain);
 
-  return NextResponse.json({ revalidated: true, now: Date.now() });
+  const { updated_at } = await fetchConfig(domain);
+
+  return NextResponse.json({ revalidated: true, updated_at });
 }

@@ -5,7 +5,7 @@ export type PortalConfig = {
   providers: { provider_id: string }[];
 };
 
-const fetchConfig = async (domain: string) => {
+export const fetchConfig = async (domain: string) => {
   const { API_KEY } = process.env;
   if (!API_KEY) {
     throw new Error("API_KEY is not set");
@@ -26,6 +26,7 @@ const fetchConfig = async (domain: string) => {
     throw new Error("Failed to fetch config");
   }
 
+  // TODO type
   return await res.json();
 };
 

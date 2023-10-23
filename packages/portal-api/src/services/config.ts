@@ -12,6 +12,7 @@ export const ConfigKVObject = z.object({
   clients: z.record(
     z.object({ name: z.string(), redirect_uris: z.string().array() }),
   ),
+  updated_at: z.string(),
 });
 
 export type PortalConfig = z.infer<typeof PortalConfig>;
@@ -29,7 +30,10 @@ export const putConfigInKV = async (
   domain: string,
   config: ConfigKVObject,
 ) => {
-  await env.CONFIG.put(domain, JSON.stringify(config));
+  await env.CONFIG.put(
+    domain,
+    JSON.stringify({ ...config, updated_at: new Date().toISOString() }),
+  );
 };
 
 export const deleteConfigInKV = async (env: Env, domain: string) => {
