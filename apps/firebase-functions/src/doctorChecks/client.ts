@@ -1,5 +1,5 @@
+import { Project } from "@authportal/db-types/firestore/project";
 import { DoctorReport } from "./lib/DoctorReport";
-import { Project } from "./lib/Project";
 
 export const checkClients = (project: Project) => {
   const { clients } = project;

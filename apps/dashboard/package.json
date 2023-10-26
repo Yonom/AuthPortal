@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@authportal/db-types": "*",
     "@authportal/firebase": "*",
     "@authportal/portal-api": "*",
     "@heroicons/react": "^2.0.18",

@@ -1,9 +1,9 @@
 import { EmailAuthProvider } from "firebase/auth";
 import { parse as pslParse } from "psl";
 import { DoctorReport } from "./lib/DoctorReport";
-import { Project } from "./lib/Project";
 import { Domain } from "./lib/Domain";
 import { getHelperDomain } from "./lib/Domain";
+import { Project } from "@authportal/db-types/firestore/project";
 
 const checkDomainWhitelist = async (project: Project, domains: Domain[]) => {
   const url = new URL("https://identitytoolkit.googleapis.com/v1/projects");

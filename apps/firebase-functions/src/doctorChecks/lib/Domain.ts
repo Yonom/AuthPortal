@@ -1,5 +1,5 @@
+import { Project } from "@authportal/db-types/firestore/project";
 import { firestore } from "firebase-admin";
-import { Project } from "./Project";
 
 export type Domain = {
   domain: string;

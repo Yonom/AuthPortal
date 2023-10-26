@@ -11,6 +11,7 @@ import { DoctorReport } from "./lib/DoctorReport";
 import { Domain } from "./lib/Domain";
 import { withFirebaseApp } from "./lib/withFirebaseApp";
 import { getHelperDomains } from "./lib/Domain";
+import { Project } from "@authportal/db-types/firestore/project";
 
 export const ensureHasProviders = (project: Project) => {
   const { providers } = project.portal_config;

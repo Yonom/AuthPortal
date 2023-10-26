@@ -24,6 +24,9 @@
     "isolate-package": "^1.3.3",
     "typescript": "^5.2.2"
   },
+  "optionalDependencies": {
+    "@authportal/db-types": "*"
+  },
   "private": true,
   "tsup": {
     "entry": [

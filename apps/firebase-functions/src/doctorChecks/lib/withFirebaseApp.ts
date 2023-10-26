@@ -1,5 +1,5 @@
+import { Project } from "@authportal/db-types/firestore/project";
 import { FirebaseApp, deleteApp, initializeApp } from "firebase/app";
-import { Project } from "./Project";
 
 export const withFirebaseApp = async <T>(
   project: Project,

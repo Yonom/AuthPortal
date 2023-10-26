@@ -1,8 +1,9 @@
 import { DoctorReport } from "./lib/DoctorReport";
-import { Project } from "./lib/Project";
 import { FirebaseError } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { withFirebaseApp } from "./lib/withFirebaseApp";
+import { Project } from "@authportal/db-types/firestore/project";
+import { FirebaseConfig } from "@authportal/db-types/firestore/firebaseConfig";
 
 export const checkFirebaseConfigSchema = (project: Project) => {
   if (Object.keys(project.portal_config.firebase_config).length === 0) {

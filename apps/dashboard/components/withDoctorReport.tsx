@@ -1,5 +1,9 @@
 "use client";
-import { DoctorMessage, DoctorReport } from "@/lib/firebase";
+
+import {
+  DoctorMessage,
+  DoctorReport,
+} from "@authportal/db-types/firestore/doctor";
 
 export const withDoctorReport = <T extends DoctorMessage["type"]>(
   messageType: T,

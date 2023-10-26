@@ -4,6 +4,7 @@ import { getDomains } from "./lib/Domain";
 import { checkClients } from "./client";
 import { checkDomains } from "./domain";
 import { ensureHasProviders, checkProviders } from "./provider";
+import { Project } from "@authportal/db-types/firestore/project";
 
 const checkProjectSchema = (project: Project) => {
   const res = Project.safeParse(project);
