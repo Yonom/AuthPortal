@@ -1,4 +1,4 @@
-import { ConfigKVObject } from "@authportal/portal-api/src/services/config";
+import { ConfigKVObject } from "../../portal-api/src/services/config";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import {
