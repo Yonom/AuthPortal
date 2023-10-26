@@ -1,18 +1,34 @@
 {
   "name": "@authportal/firebase",
-  "version": "0.0.0",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "predeploy": "npm run build && cd dist",
-    "deploy": "cd dist && npm pack && npm publish --access public",
-    "build": "tsc",
-    "postbuild": "cp package.json dist/package.json"
-  },
-  "dependencies": {
-    "@authportal/core": "0.0.0"
+    "build": "tsup"
   },
   "peerDependencies": {
-    "@firebase/auth": "^1.2.0"
-  }
+    "@firebase/auth": "^1"
+  },
+  "devDependencies": {
+    "@authportal/core": "*",
+    "tsup": "^7.2.0"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": [
+      "cjs",
+      "esm"
+    ],
+    "clean": true,
+    "sourcemap": true,
+    "noExternal": [
+      "@authportal/core"
+    ]
+  },
+  "files": [
+    "dist"
+  ]
 }

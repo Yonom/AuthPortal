@@ -32,7 +32,10 @@ build
 # turbo
 .turbo
 
-functions/lib
 firebase-debug.log*
 
 dist/
+
+# functions
+packages/functions/isolate
+packages/functions/lib
