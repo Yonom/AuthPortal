@@ -37,5 +37,5 @@ firebase-debug.log*
 dist/
 
 # functions
-packages/functions/isolate
-packages/functions/lib
+apps/firebase-infra/functions/isolate
+apps/firebase-infra/functions/lib
