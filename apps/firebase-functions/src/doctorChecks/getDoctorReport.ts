@@ -1,5 +1,4 @@
 import { DoctorReport } from "./lib/DoctorReport";
-import { Project } from "./lib/Project";
 import { checkFirebaseConfigSchema, checkFirebaseConfig } from "./config";
 import { getDomains } from "./lib/Domain";
 import { checkClients } from "./client";

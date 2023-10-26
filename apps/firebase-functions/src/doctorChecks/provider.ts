@@ -8,7 +8,6 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { DoctorReport } from "./lib/DoctorReport";
-import { Project } from "./lib/Project";
 import { Domain } from "./lib/Domain";
 import { withFirebaseApp } from "./lib/withFirebaseApp";
 import { getHelperDomains } from "./lib/Domain";

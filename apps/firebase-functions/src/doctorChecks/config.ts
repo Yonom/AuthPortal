@@ -1,21 +1,8 @@
-import { z } from "zod";
 import { DoctorReport } from "./lib/DoctorReport";
 import { Project } from "./lib/Project";
 import { FirebaseError } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { withFirebaseApp } from "./lib/withFirebaseApp";
-
-const FirebaseConfig = z
-  .object({
-    apiKey: z.string(),
-    authDomain: z.string(),
-    projectId: z.string(),
-    storageBucket: z.string(),
-    messagingSenderId: z.string(),
-    appId: z.string(),
-    measurementId: z.string().optional(),
-  })
-  .strict();
 
 export const checkFirebaseConfigSchema = (project: Project) => {
   if (Object.keys(project.portal_config.firebase_config).length === 0) {

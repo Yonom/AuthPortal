@@ -1,4 +1,4 @@
-import { _FirebasePayload, _getToken } from "../utils/portalApi";
+import { _getToken } from "../utils/portalApi";
 import { _getRedirectConfig, _removeRedirectConfig } from "./localStorage";
 
 const _getRedirectParams = (domain: string, current_url: string) => {

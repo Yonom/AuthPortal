@@ -14,18 +14,21 @@ const invalidateCacheAttempt = async (env: Env, domain: string) => {
   }
   return (await res.json()) as {
     revalidated: true;
-    updated_at: string;
+    updated_at: string | null;
   };
 };
 
 export const invalidateVercelCache = async (
   env: Env,
   domain: string,
-  targetUpdatedAt: Date,
+  targetUpdatedAt: Date | null,
 ) => {
   for (let i = 0; i < 20; i++) {
     const { updated_at } = await invalidateCacheAttempt(env, domain);
-    if (new Date(updated_at) >= targetUpdatedAt) {
+    if (
+      (targetUpdatedAt == null && updated_at == null) ||
+      (targetUpdatedAt && updated_at && new Date(updated_at) >= targetUpdatedAt)
+    ) {
       return;
     }
 

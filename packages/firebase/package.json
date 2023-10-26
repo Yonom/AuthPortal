@@ -1,6 +1,6 @@
 {
   "name": "@authportal/firebase",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -11,8 +11,7 @@
     "@firebase/auth": "^1"
   },
   "devDependencies": {
-    "@authportal/core": "*",
-    "tsup": "^7.2.0"
+    "@authportal/core": "*"
   },
   "tsup": {
     "entry": [
@@ -24,8 +23,9 @@
     ],
     "clean": true,
     "sourcemap": true,
+    "dts": true,
     "noExternal": [
-      "@authportal/core"
+      "@authportal/*"
     ]
   },
   "files": [

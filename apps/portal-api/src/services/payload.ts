@@ -2,14 +2,11 @@ import {
   _generateCodeChallenge,
   _generateRandomString,
 } from "@authportal/core/signIn/utils/crypto";
-import type { _FirebasePayload } from "@authportal/core/signIn/utils/portalApi";
 import { Env } from "../types";
-
-export type PayloadKVObject = {
-  code_challenge: string;
-  redirect_uri: string;
-  payload: _FirebasePayload;
-};
+import {
+  FirebasePayload,
+  PayloadKVObject,
+} from "@authportal/db-types/cloudflare/payload";
 
 export const getPayload = async (
   env: Env,
@@ -39,7 +36,7 @@ export const putPayload = async (
   client_id: string,
   redirect_uri: string,
   code_challenge: string,
-  payload: _FirebasePayload,
+  payload: FirebasePayload,
 ) => {
   const code = _generateRandomString();
 

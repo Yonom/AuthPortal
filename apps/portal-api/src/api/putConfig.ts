@@ -1,8 +1,9 @@
 import { IRequest } from "itty-router";
 import { z } from "zod";
-import { ConfigKVObject, putConfigInKV } from "../services/config";
+import { putConfigInKV } from "../services/config";
 import { Env } from "../types";
 import { invalidateVercelCache } from "../services/invalidateVercelCache";
+import { ConfigKVObject } from "@authportal/db-types/cloudflare/config";
 
 const ConfigParams = ConfigKVObject.extend({
   domains: z.string().array(),
@@ -17,7 +18,7 @@ export const putConfig = async (req: IRequest, env: Env) => {
   const { domains, ...newConfig } = contentObj.data;
   for (const domain of domains) {
     await putConfigInKV(env, domain, newConfig);
-    await invalidateVercelCache(env, domain);
+    await invalidateVercelCache(env, domain, new Date(newConfig.updated_at));
   }
   return Response.json({});
 };

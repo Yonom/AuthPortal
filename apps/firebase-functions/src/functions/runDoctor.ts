@@ -1,7 +1,6 @@
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { onDocumentWritten } from "firebase-functions/v2/firestore";
 import { getDoctorReport } from "../doctorChecks/getDoctorReport";
-import { Project } from "../doctorChecks/lib/Project";
 
 export const runDoctor = onDocumentWritten(
   "projects/{project_id}",

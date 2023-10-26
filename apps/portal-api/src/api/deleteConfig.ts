@@ -13,6 +13,6 @@ const ConfigParams = z
 export const deleteConfig = async (req: IRequest, env: Env) => {
   const { domain } = ConfigParams.parse(req.query);
   await deleteConfigInKV(env, domain);
-  await invalidateVercelCache(env, domain);
+  await invalidateVercelCache(env, domain, null);
   return Response.json({});
 };

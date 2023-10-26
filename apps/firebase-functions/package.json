@@ -2,7 +2,7 @@
   "version": "0.0.0",
   "name": "functions",
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
@@ -12,7 +12,6 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "@authportal/core": "*",
     "firebase": "^10.5.0",
     "firebase-admin": "^11.11.0",
     "firebase-functions": "^4.4.1",
@@ -20,9 +19,21 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@authportal/core": "*",
     "@types/psl": "^1.1.2",
     "isolate-package": "^1.3.3",
     "typescript": "^5.2.2"
   },
-  "private": true
+  "private": true,
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": "esm",
+    "clean": true,
+    "sourcemap": true,
+    "noExternal": [
+      "@authportal/*"
+    ]
+  }
 }

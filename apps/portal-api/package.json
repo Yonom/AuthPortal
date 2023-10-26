@@ -9,6 +9,7 @@
   "dependencies": {
     "@authportal/core": "*",
     "@authportal/portal": "*",
+    "@authportal/db-types": "*",
     "cookie": "^0.5.0",
     "itty-router": "^4.0.23",
     "zod": "^3.22.4"

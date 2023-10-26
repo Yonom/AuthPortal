@@ -1,6 +1,4 @@
-export type _FirebasePayload = {
-  firebase_user: Record<string, unknown>;
-};
+import { FirebasePayload } from "@authportal/db-types/cloudflare/payload";
 
 export const _getAuthorizeUrl = (
   domain: string,
@@ -9,7 +7,7 @@ export const _getAuthorizeUrl = (
   scope: "firebase_auth",
   redirect_uri: string,
   screen_hint: "signup" | undefined,
-  response_mode?: "web_message" | undefined,
+  response_mode?: "web_message" | undefined,
 ) => {
   const url = new URL(`https://${domain}/authorize`);
   url.searchParams.set("response_type", "code");
@@ -36,7 +34,7 @@ export const _getToken = async (
   redirect_uri: string,
   code: string,
   code_verifier: string,
-): Promise<_FirebasePayload> => {
+): Promise<FirebasePayload> => {
   const response = await fetch(`https://${domain}/oauth/token`, {
     method: "POST",
     headers: {

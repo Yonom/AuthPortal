@@ -8,7 +8,7 @@ import { _handleRedirect } from "@authportal/core/signIn/redirect/handleRedirect
 import { _signInWithPopup } from "@authportal/core/signIn/popup/signInWithPopup";
 import { Auth, User } from "@firebase/auth";
 import { _castAuth, UserImpl } from "@firebase/auth/internal";
-import { _FirebasePayload } from "@authportal/core/signIn/utils/portalApi";
+import { FirebasePayload } from "@authportal/db-types/cloudflare/payload";
 
 export type AuthPortalPopupResult = {
   user: User;
@@ -52,7 +52,7 @@ export class AuthPortal {
 
   private async _signInWithFirebasePayload(
     firebase_auth: Auth,
-    payload: _FirebasePayload,
+    payload: FirebasePayload,
   ) {
     const authInternal = _castAuth(firebase_auth);
     const user = UserImpl._fromJSON(authInternal, payload.firebase_user);

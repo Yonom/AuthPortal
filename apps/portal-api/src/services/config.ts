@@ -1,22 +1,5 @@
-import { z } from "zod";
 import { Env } from "../types";
-
-export const PortalConfig = z.object({
-  firebase_config: z.record(z.string()),
-  providers: z.array(z.object({ provider_id: z.string() })),
-  theme: z.object({ primary_color: z.string().optional() }).optional(),
-});
-
-export const ConfigKVObject = z.object({
-  portal_config: PortalConfig,
-  clients: z.record(
-    z.object({ name: z.string(), redirect_uris: z.string().array() }),
-  ),
-  updated_at: z.string(),
-});
-
-export type PortalConfig = z.infer<typeof PortalConfig>;
-export type ConfigKVObject = z.infer<typeof ConfigKVObject>;
+import { ConfigKVObject } from "@authportal/db-types/cloudflare/config";
 
 export const getConfigFromKV = async (env: Env, domain: string) => {
   const res = await env.CONFIG.get<ConfigKVObject>(domain, "json");

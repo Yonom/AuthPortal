@@ -30,7 +30,10 @@ export async function POST(request: NextRequest) {
 
   revalidateTag("config-" + domain);
 
-  const { updated_at } = await fetchConfig(domain);
-
-  return NextResponse.json({ revalidated: true, updated_at });
+  try {
+    const { updated_at } = await fetchConfig(domain);
+    return NextResponse.json({ revalidated: true, updated_at });
+  } catch {
+    return NextResponse.json({ revalidated: true, updated_at: null });
+  }
 }

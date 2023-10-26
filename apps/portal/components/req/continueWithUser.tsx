@@ -1,4 +1,3 @@
-import { _FirebasePayload } from "@authportal/core/signIn/utils/portalApi";
 import { User } from "firebase/auth";
 import { getReq } from "./urlWithReq";
 import { PutTokenRequestBody } from "./PutTokenRequestBody";

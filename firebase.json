@@ -1,0 +1,16 @@
+{
+  "functions": [
+    {
+      "source": "apps/firebase-functions",
+      "codebase": "default",
+      "runtime": "nodejs18",
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "infra/firestore/firestore.rules",
+    "indexes": "infra/firestore/firestore.indexes.json"
+  }
+}
