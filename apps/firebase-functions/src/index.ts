@@ -1,7 +1,6 @@
-import { initializeApp } from "firebase-admin/app";
-import { setGlobalOptions } from "firebase-functions/v2";
+import "./globalOptions";
 
-setGlobalOptions({ maxInstances: 10 });
+import { initializeApp } from "firebase-admin/app";
 initializeApp();
 
 export { syncProjectsToCloudflare } from "./functions/syncProjectsToCloudflare";
