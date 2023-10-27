@@ -1,6 +1,6 @@
 import { FC, useMemo } from "react";
 import { SidebarNav } from "./SidebarNav";
-import { DoctorReport } from "@/lib/firebase";
+import { DoctorReport } from "@authportal/db-types/firestore/doctor";
 
 const isTruthy = <T,>(item: T | null | undefined | false | ""): item is T => {
   return !!item;

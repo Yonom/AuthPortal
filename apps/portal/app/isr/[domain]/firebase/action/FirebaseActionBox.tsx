@@ -2,8 +2,8 @@
 
 import { z } from "zod";
 import { redirect, useSearchParams } from "next/navigation";
-import { noSSR } from "@/components/req/noSSR";
 import Loading from "./loading";
+import { throwOnNoSSR } from "@authportal/common-ui/utils/throwOnNoSSR";
 
 const FirebaseActionSearchParams = z.object({
   mode: z.string(),
@@ -17,7 +17,7 @@ const ContinueUrlSearchParams = z.object({
 });
 
 const FirebaseActionPage = () => {
-  noSSR();
+  throwOnNoSSR();
 
   const searchParams = useSearchParams();
   const { mode, oobCode, continueUrl } = FirebaseActionSearchParams.parse(

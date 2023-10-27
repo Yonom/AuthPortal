@@ -16,9 +16,9 @@ import { AuthGoogleLogin } from "./AuthGoogleLogin";
 import { ErrorMessages } from "./ErrorMessages";
 import { PortalConfig } from "@/components/withConfigPage";
 import LinkWithReq from "./link/LinkWithReq";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { getHasEmailLogin } from "./getHasEmailLogin";
-import { noSSR } from "./req/noSSR";
+import { throwOnNoSSR } from "@authportal/common-ui/utils/throwOnNoSSR";
 
 export const initFirebase = (serverConfig: LoginBoxProps["config"]) => {
   const { firebase_config } = serverConfig;
@@ -45,8 +45,8 @@ const AuthDivider: FC = () => {
 const LoginBox: FC<LoginBoxProps> = ({ config, signup }) => {
   const hasEmailLogin = getHasEmailLogin(config);
   if (!hasEmailLogin && signup) {
-    noSSR
-    noSSR();
+    throwOnNoSSR();
+
     // redirect to sign in
     const url = new URL(window.location.href);
     url.pathname = "/sign-in";

@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { ReqParams, decryptReq, encryptReq } from "./reqEncryption";
 import { use } from "react";
-import { noSSR } from "./noSSR";
 import { cache } from "react";
+import { throwOnNoSSR } from "@authportal/common-ui/utils/throwOnNoSSR";
 
 const AuthorizeSearchParams = ReqParams.extend({
   response_type: z.literal("code"),
@@ -64,7 +64,7 @@ export const getURLWithReq = cache(async (url: string) => {
 });
 
 export const useURLWithReq = (url: string) => {
-  noSSR();
+  throwOnNoSSR();
 
   return use(getURLWithReq(url));
 };

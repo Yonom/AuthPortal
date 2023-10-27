@@ -38,7 +38,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Project } from "@/lib/firebase";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import {
@@ -52,6 +51,7 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Project } from "@authportal/db-types/firestore/project";
 
 type ProjectLayoutProps = {
   children: React.ReactNode;
