@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { redirect, useSearchParams } from "next/navigation";
 import Loading from "./loading";
-import { throwOnNoSSR } from "@authportal/common-ui/utils/throwOnNoSSR";
+import { throwOnNoSSR } from "@authportal/common-ui/lib/throwOnNoSSR";
 
 const FirebaseActionSearchParams = z.object({
   mode: z.string(),

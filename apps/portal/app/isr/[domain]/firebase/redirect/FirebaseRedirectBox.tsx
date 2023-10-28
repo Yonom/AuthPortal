@@ -12,7 +12,7 @@ import { REDIRECT_FAILED_ERROR } from "../../AuthPortalError";
 import { continueWithUser } from "../../../../../components/req/continueWithUser";
 import { PortalConfig } from "../../../../../components/withConfigPage";
 import { cache } from "react";
-import { throwOnNoSSR } from "@authportal/common-ui/utils/throwOnNoSSR";
+import { throwOnNoSSR } from "@authportal/common-ui/lib/throwOnNoSSR";
 import Loading from "./loading";
 
 const handleRedirect = cache(

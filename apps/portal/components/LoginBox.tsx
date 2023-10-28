@@ -18,7 +18,7 @@ import { PortalConfig } from "@/components/withConfigPage";
 import LinkWithReq from "./link/LinkWithReq";
 import { redirect } from "next/navigation";
 import { getHasEmailLogin } from "./getHasEmailLogin";
-import { throwOnNoSSR } from "@authportal/common-ui/utils/throwOnNoSSR";
+import { throwOnNoSSR } from "@authportal/common-ui/lib/throwOnNoSSR";
 
 export const initFirebase = (serverConfig: LoginBoxProps["config"]) => {
   const { firebase_config } = serverConfig;

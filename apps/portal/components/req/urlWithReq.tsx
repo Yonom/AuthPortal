@@ -2,7 +2,7 @@ import { z } from "zod";
 import { ReqParams, decryptReq, encryptReq } from "./reqEncryption";
 import { use } from "react";
 import { cache } from "react";
-import { throwOnNoSSR } from "@authportal/common-ui/utils/throwOnNoSSR";
+import { throwOnNoSSR } from "@authportal/common-ui/lib/throwOnNoSSR";
 
 const AuthorizeSearchParams = ReqParams.extend({
   response_type: z.literal("code"),
