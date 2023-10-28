@@ -12,7 +12,11 @@ import {
 import { firestoreCollections } from "@/lib/firebase";
 import { FC, useEffect, useState } from "react";
 import { withDoctorReport } from "@/components/withDoctorReport";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@authportal/common-ui/ui/alert";
 import { ExclamationTriangleIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useProject } from "@/lib/useProject";
 import { z } from "zod";
@@ -26,10 +30,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@authportal/common-ui/ui/form";
 import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@authportal/common-ui/ui/input";
+import { Button } from "@authportal/common-ui/ui/button";
 
 type CodeBlockParams = {
   children: React.ReactNode;

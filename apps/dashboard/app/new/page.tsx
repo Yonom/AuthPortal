@@ -10,10 +10,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { InputWithText } from "@/components/ui/input-with-text";
+} from "@authportal/common-ui/ui/form";
+import { Button } from "@authportal/common-ui/ui/button";
+import { Input } from "@authportal/common-ui/ui/input";
+import { InputWithText } from "@authportal/common-ui/ui/input-with-text";
 import { useForm } from "react-hook-form";
 import { auth, firestore, firestoreCollections } from "../../lib/firebase";
 import {

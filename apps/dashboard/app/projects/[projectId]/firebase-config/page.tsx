@@ -10,17 +10,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+} from "@authportal/common-ui/ui/form";
+import { Button } from "@authportal/common-ui/ui/button";
 import { useForm } from "react-hook-form";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@authportal/common-ui/ui/textarea";
 import Link from "next/link";
 import withAuth from "@/components/withAuth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { firestoreCollections } from "@/lib/firebase";
 import { FC, useEffect, useState } from "react";
 import { configToConfigStr, configStrToConfig } from "./configStrParser";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@authportal/common-ui/ui/alert";
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "../../../../components/withDoctorReport";
 import { useProject } from "../../../../lib/useProject";

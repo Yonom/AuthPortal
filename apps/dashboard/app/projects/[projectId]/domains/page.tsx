@@ -5,10 +5,14 @@ import { doc, limit, query, where } from "firebase/firestore";
 import { firestoreCollections } from "@/lib/firebase";
 import { FC } from "react";
 import { useProject } from "@/lib/useProject";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@authportal/common-ui/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "@/components/withDoctorReport";
-import { Button } from "@/components/ui/button";
+import { Button } from "@authportal/common-ui/ui/button";
 
 const NoneConfigured = withDoctorReport("domain/none-configured", () => {
   return (

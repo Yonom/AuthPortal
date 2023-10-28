@@ -2,15 +2,24 @@
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormItem,
+  FormLabel,
+} from "@authportal/common-ui/ui/form";
+import { Button } from "@authportal/common-ui/ui/button";
 import { useForm } from "react-hook-form";
 import withAuth from "@/components/withAuth";
 import { serverTimestamp, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { EmailAuthProvider, GoogleAuthProvider } from "firebase/auth";
 import { useProject } from "@/lib/useProject";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@authportal/common-ui/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "@/components/withDoctorReport";
 
