@@ -31,7 +31,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@authportal/common-ui/ui/form";
-import { cn } from "@/lib/utils";
+import { cn } from "@authportal/common-ui/lib/utils";
 import { Input } from "@authportal/common-ui/ui/input";
 import { Button } from "@authportal/common-ui/ui/button";
 

@@ -3,7 +3,7 @@ import { useDocumentData } from "react-firebase-hooks/firestore";
 import { doc } from "firebase/firestore";
 import { firestoreCollections } from "@/lib/firebase";
 import { useMemo } from "react";
-import { throwOnNoSSR } from "@authportal/common-ui/utils/throwOnNoSSR";
+import { throwOnNoSSR } from "@authportal/common-ui/lib/throwOnNoSSR";
 
 // TODO suspend during load
 export const useProject = (projectId: string) => {

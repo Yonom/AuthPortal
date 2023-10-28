@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@authportal/common-ui/lib/utils";
 import { buttonVariants } from "@authportal/common-ui/ui/button";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
