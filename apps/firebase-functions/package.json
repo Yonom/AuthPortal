@@ -1,6 +1,6 @@
 {
   "version": "0.0.0",
-  "name": "functions",
+  "name": "@authportal/firebase-functions",
   "scripts": {
     "build": "tsup",
     "build:watch": "tsc --watch",
@@ -12,16 +12,14 @@
   },
   "main": "dist/index.js",
   "dependencies": {
-    "firebase": "^10.5.1",
+    "firebase": "^10.5.2",
     "firebase-admin": "^11.11.0",
     "firebase-functions": "^4.4.1",
     "psl": "^1.9.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@authportal/core": "*",
-    "@types/psl": "^1.1.2",
-    "typescript": "^5.2.2"
+    "@types/psl": "^1.1.2"
   },
   "optionalDependencies": {
     "@authportal/db-types": "*"

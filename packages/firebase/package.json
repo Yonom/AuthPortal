@@ -7,11 +7,13 @@
   "scripts": {
     "build": "tsup"
   },
+  "license": "MIT",
   "peerDependencies": {
     "@firebase/auth": "^1"
   },
   "devDependencies": {
-    "@authportal/core": "*"
+    "@authportal/core": "*",
+    "@authportal/db-types": "*"
   },
   "tsup": {
     "entry": [

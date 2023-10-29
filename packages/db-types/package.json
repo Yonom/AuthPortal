@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@firebase/firestore": "^4.3.1",
     "zod": "^3.22.4"
+  },
+  "peerDependencies": {
+    "@firebase/firestore": "^4"
   }
 }

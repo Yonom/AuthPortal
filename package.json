@@ -5,19 +5,32 @@
     "packages/*"
   ],
   "scripts": {
+    "depcheck": "yarn workspaces run depcheck --quiet --ignores=\"@types/node,@types/react-dom,autoprefixer,postcss\"",
+    "ncu": "ncu -u && yarn workspaces run ncu -u",
     "dev:portal": "yarn workspace @authportal/portal dev",
     "deploy:firebase": "firebase deploy"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",
+    "depcheck": "^1.4.7",
+    "eslint": "^8.52.0",
+    "eslint-config-next": "^14.0.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "npm-check-updates": "^16.14.6",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.6",
     "tsup": "^7.2.0",
-    "typescript": "^5.2.2"
+    "turbo": "^1.10.16",
+    "typescript": "^5.2.2",
+    "vercel": "^32.5.0",
+    "wrangler": "^3.15.0"
   },
   "prettier": {
     "plugins": [
       "prettier-plugin-tailwindcss"
     ]
+  },
+  "eslintConfig": {
+    "extends": "next/core-web-vitals"
   }
 }
