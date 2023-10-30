@@ -3,7 +3,7 @@ import {
   _generateRandomString,
 } from "@authportal/core/signIn/utils/crypto";
 import { z } from "zod";
-import { getPayload } from "../services/payload";
+import { getPayload } from "../api/getPayload";
 import { Env } from "../types";
 
 const PostTokenContent = z

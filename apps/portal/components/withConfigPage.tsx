@@ -1,4 +1,14 @@
 import { ComponentType } from "react";
+import { ConfigKVObject } from "@authportal/db-types/cloudflare/config";
+
+export class FetchConfigError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+  ) {
+    super(message);
+  }
+}
 
 export type PortalConfig = {
   firebase_config: Record<string, string>;
@@ -23,11 +33,10 @@ export const fetchConfig = async (domain: string) => {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch config");
+    throw new FetchConfigError("Failed to fetch config", res.status);
   }
 
-  // TODO type
-  return await res.json();
+  return (await res.json()) as ConfigKVObject;
 };
 
 export const withConfigPage = (

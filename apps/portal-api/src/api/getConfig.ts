@@ -12,5 +12,11 @@ const ConfigParams = z
 export const getConfig = async (req: IRequest, env: Env) => {
   const { domain } = ConfigParams.parse(req.query);
   const config = await getConfigFromKV(env, domain);
+  if (!config) {
+    return Response.json(
+      { error: "Config not found for domain: " + domain },
+      { status: 404 },
+    );
+  }
   return Response.json(config);
 };

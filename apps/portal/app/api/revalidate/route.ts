@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
-import { fetchConfig } from "@/components/withConfigPage";
+import { FetchConfigError, fetchConfig } from "@/components/withConfigPage";
 
 const withAuthorization = (req: NextRequest) => {
   const authHeader = req.headers.get("Authorization");
@@ -33,7 +33,9 @@ export async function POST(request: NextRequest) {
   try {
     const { updated_at } = await fetchConfig(domain);
     return NextResponse.json({ revalidated: true, updated_at });
-  } catch {
+  } catch (ex: unknown) {
+    if (!(ex instanceof FetchConfigError)) throw ex;
+    if (ex.status !== 404) throw ex;
     return NextResponse.json({ revalidated: true, updated_at: null });
   }
 }

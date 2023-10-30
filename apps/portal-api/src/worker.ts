@@ -32,7 +32,9 @@ const router = Router()
   .delete("/api/config", withAuthorization, deleteConfig)
   .all("*", () => error(404));
 
-export default {
+const worker = {
   fetch: (req: Request, env: Env, ctx: ExecutionContext) =>
     router.handle(req, env, ctx).then(json).catch(error),
 };
+
+export default worker;

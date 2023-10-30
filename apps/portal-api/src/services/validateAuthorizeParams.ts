@@ -39,6 +39,7 @@ export const validateAuthorizeParams = async (
   params: ReqParams,
 ) => {
   const config = await getConfigFromKV(env, domain);
+  if (config == null) throw new Error("Invalid domain");
 
   const { client_id, redirect_uri, response_mode } = params;
 

@@ -1,11 +1,8 @@
 import { Env } from "../types";
 import { ConfigKVObject } from "@authportal/db-types/cloudflare/config";
 
-export const getConfigFromKV = async (env: Env, domain: string) => {
-  const res = await env.CONFIG.get<ConfigKVObject>(domain, "json");
-  if (!res) throw new Error("Invalid domain");
-
-  return res;
+export const getConfigFromKV = (env: Env, domain: string) => {
+  return env.CONFIG.get<ConfigKVObject>(domain, "json");
 };
 
 export const putConfigInKV = async (
