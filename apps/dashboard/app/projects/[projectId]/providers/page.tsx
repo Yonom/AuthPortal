@@ -7,8 +7,8 @@ import {
   FormControl,
   FormItem,
   FormLabel,
-} from "@authportal/common-ui/ui/form";
-import { Button } from "@authportal/common-ui/ui/button";
+} from "@authportal/common-ui/components/ui/form";
+import { Button } from "@authportal/common-ui/components/ui/button";
 import { useForm } from "react-hook-form";
 import withAuth from "@/components/withAuth";
 import { serverTimestamp, setDoc } from "firebase/firestore";
@@ -19,7 +19,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@authportal/common-ui/ui/alert";
+} from "@authportal/common-ui/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "@/components/withDoctorReport";
 
@@ -91,7 +91,9 @@ const FormSchema = z.object({
 type FormSchema = z.infer<typeof FormSchema>;
 
 const ProvidersPage = ({ params }: { params: { projectId: string } }) => {
-  const { project, doctor, projectRef } = useProject(params.projectId);
+  const { projectRef, project, doctor, loading, validating } = useProject(
+    params.projectId,
+  );
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -127,7 +129,7 @@ const ProvidersPage = ({ params }: { params: { projectId: string } }) => {
     }
   };
 
-  if (!project || doctor === undefined) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <main className="flex flex-col gap-4">
@@ -152,8 +154,8 @@ const ProvidersPage = ({ params }: { params: { projectId: string } }) => {
               <FormLabel>{label}</FormLabel>
             </FormItem>
           ))}
-          <Button disabled={isBusy || !doctor} type="submit">
-            {isBusy ? "Saving..." : !doctor ? "Validating..." : "Save"}
+          <Button disabled={isBusy || validating} type="submit">
+            {isBusy ? "Saving..." : validating ? "Validating..." : "Save"}
           </Button>
         </form>
       </Form>

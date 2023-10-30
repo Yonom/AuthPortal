@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@authportal/common-ui/ui/card";
+} from "@authportal/common-ui/components/ui/card";
 import Link from "next/link";
 import { FC } from "react";
 

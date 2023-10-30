@@ -10,10 +10,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@authportal/common-ui/ui/form";
-import { Button } from "@authportal/common-ui/ui/button";
+} from "@authportal/common-ui/components/ui/form";
+import { Button } from "@authportal/common-ui/components/ui/button";
 import { useForm } from "react-hook-form";
-import { Textarea } from "@authportal/common-ui/ui/textarea";
+import { Textarea } from "@authportal/common-ui/components/ui/textarea";
 import Link from "next/link";
 import withAuth from "@/components/withAuth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
@@ -24,7 +24,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@authportal/common-ui/ui/alert";
+} from "@authportal/common-ui/components/ui/alert";
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "../../../../components/withDoctorReport";
 import { useProject } from "../../../../lib/useProject";
@@ -80,20 +80,36 @@ const AuthNotEnabled = withDoctorReport("config/auth-not-enabled", () => {
   );
 });
 
-const InternalError = withDoctorReport("internal-error", ({ message }) => {
+const TimeoutError = withDoctorReport("general/timeout", ({ message }) => {
   return (
     <Alert variant="destructive">
       <ExclamationTriangleIcon className="h-4 w-4" />
-      <AlertTitle>
-        An internal error has occured while validating your configuration
-      </AlertTitle>
+      <AlertTitle>Validation timed out</AlertTitle>
       <AlertDescription>
-        Please try again later or contact support. <br />
-        Error message: {message.message}
+        We were unable to validate your configuration. Please try again later or
+        contact support.
       </AlertDescription>
     </Alert>
   );
 });
+
+const InternalError = withDoctorReport(
+  "general/internal-error",
+  ({ message }) => {
+    return (
+      <Alert variant="destructive">
+        <ExclamationTriangleIcon className="h-4 w-4" />
+        <AlertTitle>
+          An internal error has occured while validating your configuration
+        </AlertTitle>
+        <AlertDescription>
+          Please try again later or contact support. <br />
+          Error message: {message.message}
+        </AlertDescription>
+      </Alert>
+    );
+  },
+);
 
 const FormSchema = z.object({
   config: z.string().refine(
@@ -114,7 +130,9 @@ const FormSchema = z.object({
 type FormSchema = z.infer<typeof FormSchema>;
 
 const SetupPage = ({ params }: { params: { projectId: string } }) => {
-  const { project, doctor, projectRef } = useProject(params.projectId);
+  const { projectRef, project, doctor, loading, validating } = useProject(
+    params.projectId,
+  );
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -154,7 +172,7 @@ const SetupPage = ({ params }: { params: { projectId: string } }) => {
     }
   };
 
-  if (!project || doctor === undefined) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <main className="flex flex-col gap-4">
@@ -197,8 +215,8 @@ const SetupPage = ({ params }: { params: { projectId: string } }) => {
               </FormItem>
             )}
           />
-          <Button disabled={isBusy || !doctor} type="submit">
-            {isBusy ? "Saving..." : !doctor ? "Validating..." : "Save"}
+          <Button disabled={isBusy || validating} type="submit">
+            {isBusy ? "Saving..." : validating ? "Validating..." : "Save"}
           </Button>
         </form>
       </Form>

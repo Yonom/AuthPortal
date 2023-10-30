@@ -11,7 +11,7 @@ const checkProjectSchema = (project: Project) => {
   if (res.success) return DoctorReport.EMPTY;
 
   return DoctorReport.fromMessage({
-    type: "internal-error",
+    type: "general/internal-error",
     message: `Project document is invalid: ${res.error.message}`,
   });
 };
@@ -38,7 +38,7 @@ export const getDoctorReport = async (projectId: string, project: Project) => {
       report.concat(ex);
     } else {
       report.addMessage({
-        type: "internal-error",
+        type: "general/internal-error",
         message: `Unhandled error: ${ex}`,
         stack: (ex as Error).stack,
       });

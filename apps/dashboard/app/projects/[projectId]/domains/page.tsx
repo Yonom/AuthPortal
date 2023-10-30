@@ -1,18 +1,15 @@
 "use client";
+
 import withAuth from "@/components/withAuth";
-import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
-import { doc, limit, query, where } from "firebase/firestore";
-import { firestoreCollections } from "@/lib/firebase";
-import { FC } from "react";
 import { useProject } from "@/lib/useProject";
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@authportal/common-ui/ui/alert";
+} from "@authportal/common-ui/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { withDoctorReport } from "@/components/withDoctorReport";
-import { Button } from "@authportal/common-ui/ui/button";
+import { Button } from "@authportal/common-ui/components/ui/button";
 
 const NoneConfigured = withDoctorReport("domain/none-configured", () => {
   return (
@@ -66,14 +63,9 @@ const NotWhitelistedForOauth = withDoctorReport(
 );
 
 const DomainsPage = ({ params }: { params: { projectId: string } }) => {
-  const { project, doctor } = useProject(params.projectId);
-  const domainRef = query(
-    firestoreCollections.domains,
-    where("project_id", "==", params.projectId),
-  );
-  const [domains] = useCollection(domainRef);
-
-  if (!project || !domains || doctor === undefined) return <p>Loading...</p>;
+  const data = useProject(params.projectId);
+  if (data.loading) return <p>Loading...</p>;
+  const { doctor, domains } = data;
 
   return (
     <main className="flex flex-col gap-4">
@@ -83,10 +75,10 @@ const DomainsPage = ({ params }: { params: { projectId: string } }) => {
       <HelperDomainMismatch report={doctor} />
       <NotWhitelistedForOauth report={doctor} />
 
-      {domains.docs.map((domain) => {
+      {domains.map(({ domain }) => {
         return (
-          <div key={domain.id}>
-            <p>{domain.id}</p>
+          <div key={domain}>
+            <p>{domain}</p>
           </div>
         );
       })}

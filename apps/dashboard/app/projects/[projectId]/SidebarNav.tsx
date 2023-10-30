@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@authportal/common-ui/lib/utils";
-import { buttonVariants } from "@authportal/common-ui/ui/button";
+import { buttonVariants } from "@authportal/common-ui/components/ui/button";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {

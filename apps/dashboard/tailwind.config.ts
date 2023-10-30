@@ -1,7 +1,9 @@
 /** @type {import('tailwindcss').Config} */
+// TODO centralize config
 module.exports = {
   darkMode: ["class"],
   content: [
+    '../../packages/common-ui/components/**/*.{ts,tsx}',
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',

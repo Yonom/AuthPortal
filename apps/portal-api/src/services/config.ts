@@ -8,7 +8,7 @@ export const getConfigFromKV = (env: Env, domain: string) => {
 export const putConfigInKV = async (
   env: Env,
   domain: string,
-  config: ConfigKVObject,
+  config: Omit<ConfigKVObject, "updated_at">,
 ) => {
   await env.CONFIG.put(
     domain,

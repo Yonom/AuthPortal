@@ -8,7 +8,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { Project } from "@authportal/db-types/firestore/project";
-import { DoctorReport } from "@authportal/db-types/firestore/doctor";
+import { FirestoreDoctorReportDocument } from "@authportal/db-types/firestore/doctor";
 import { FirestoreDomainDocument } from "@authportal/db-types/firestore/domain";
 
 export const firebaseConfig = JSON.parse(
@@ -31,7 +31,7 @@ const firestoreCollections = {
   projects: dataPoint<Project>("projects"),
   getDoctorReport: (projectId: string) =>
     doc(
-      dataPoint<DoctorReport>("projects"),
+      dataPoint<FirestoreDoctorReportDocument>("projects"),
       projectId,
       "metadata",
       "doctor_report",

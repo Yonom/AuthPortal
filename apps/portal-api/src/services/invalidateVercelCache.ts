@@ -18,24 +18,38 @@ const invalidateCacheAttempt = async (env: Env, domain: string) => {
   };
 };
 
+const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+// Cloudflare KV is eventually consistent
+// this function will retry until the cache is invalidated
 export const invalidateVercelCache = async (
   env: Env,
   domain: string,
   targetUpdatedAt: Date | null,
 ) => {
-  for (let i = 0; i < 20; i++) {
+  await sleep(1000);
+
+  let doubleConfirm = false;
+  for (let i = 0; i < 10; i++) {
     const { updated_at } = await invalidateCacheAttempt(env, domain);
     if (
-      (targetUpdatedAt == null && updated_at == null) ||
+      (targetUpdatedAt === null && updated_at === null) ||
       (targetUpdatedAt && updated_at && new Date(updated_at) >= targetUpdatedAt)
     ) {
-      return;
-    }
+      if (doubleConfirm) {
+        return;
+      } else {
+        doubleConfirm = true;
 
-    // wait 3 sec
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+        await sleep(1000);
+      }
+    } else {
+      doubleConfirm = false;
+
+      await sleep(6000);
+    }
   }
   throw new Error("Failed to invalidate cache");
 };
-
-// TODO verify bg script failures bubble up

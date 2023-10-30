@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@authportal/common-ui/ui/button";
+import { Button } from "@authportal/common-ui/components/ui/button";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@authportal/common-ui/ui/avatar";
+} from "@authportal/common-ui/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +19,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@authportal/common-ui/ui/dropdown-menu";
+} from "@authportal/common-ui/components/ui/dropdown-menu";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
 import { useTheme } from "next-themes";

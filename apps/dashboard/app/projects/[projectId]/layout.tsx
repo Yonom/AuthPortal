@@ -1,6 +1,6 @@
 "use client";
 
-import { Separator } from "@authportal/common-ui/ui/separator";
+import { Separator } from "@authportal/common-ui/components/ui/separator";
 import ConfigNav from "./ConfigNav";
 import { FC, useEffect, useState } from "react";
 import { useProject } from "@/lib/useProject";
@@ -10,9 +10,9 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from "@authportal/common-ui/ui/dropdown-menu";
+} from "@authportal/common-ui/components/ui/dropdown-menu";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { Button } from "@authportal/common-ui/ui/button";
+import { Button } from "@authportal/common-ui/components/ui/button";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -21,14 +21,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@authportal/common-ui/ui/alert-dialog";
+} from "@authportal/common-ui/components/ui/alert-dialog";
 import {
   DocumentReference,
   deleteDoc,
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
-import { toast } from "@authportal/common-ui/ui/use-toast";
+import { toast } from "@authportal/common-ui/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -37,8 +37,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@authportal/common-ui/ui/dialog";
-import { Input } from "@authportal/common-ui/ui/input";
+} from "@authportal/common-ui/components/ui/dialog";
+import { Input } from "@authportal/common-ui/components/ui/input";
 import { z } from "zod";
 import {
   Form,
@@ -48,7 +48,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@authportal/common-ui/ui/form";
+} from "@authportal/common-ui/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Project } from "@authportal/db-types/firestore/project";

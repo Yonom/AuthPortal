@@ -7,8 +7,8 @@ export const Project = ConfigKVObject.extend({
     name: z.string(),
     members: z.array(z.string()),
   }),
-  created_at: z.custom<Timestamp>(),
-  updated_at: z.custom<Timestamp>(),
+  created_at: z.custom<Timestamp>().nullable(),
+  updated_at: z.custom<Timestamp>().nullable(),
 });
 
 export type Project = z.infer<typeof Project>;

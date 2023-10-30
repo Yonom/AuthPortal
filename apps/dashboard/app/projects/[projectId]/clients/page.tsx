@@ -16,7 +16,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@authportal/common-ui/ui/alert";
+} from "@authportal/common-ui/components/ui/alert";
 import { ExclamationTriangleIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useProject } from "@/lib/useProject";
 import { z } from "zod";
@@ -30,10 +30,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@authportal/common-ui/ui/form";
+} from "@authportal/common-ui/components/ui/form";
 import { cn } from "@authportal/common-ui/lib/utils";
-import { Input } from "@authportal/common-ui/ui/input";
-import { Button } from "@authportal/common-ui/ui/button";
+import { Input } from "@authportal/common-ui/components/ui/input";
+import { Button } from "@authportal/common-ui/components/ui/button";
 
 type CodeBlockParams = {
   children: React.ReactNode;
@@ -85,15 +85,8 @@ const FormSchema = z.object({
 type FormSchema = z.infer<typeof FormSchema>;
 
 const ClientsPage = ({ params }: { params: { projectId: string } }) => {
-  const { project, doctor, projectRef } = useProject(params.projectId);
-
-  // TODO duplicate code
-  const domainRef = query(
-    firestoreCollections.domains,
-    where("project_id", "==", params.projectId),
-    limit(1),
-  );
-  const [domains] = useCollection(domainRef);
+  const { projectRef, project, doctor, domains, loading, validating } =
+    useProject(params.projectId);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
@@ -123,7 +116,7 @@ const ClientsPage = ({ params }: { params: { projectId: string } }) => {
   }, [form, project]);
 
   const [isBusy, setIsBusy] = useState(false);
-  if (!project || !domains || doctor === undefined) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
 
   const handleSubmit = async (values: FormSchema) => {
     setIsBusy(true);
@@ -218,8 +211,8 @@ const ClientsPage = ({ params }: { params: { projectId: string } }) => {
                 </Button>
               </div>
 
-              <Button disabled={isBusy || !doctor} type="submit">
-                {isBusy ? "Saving..." : !doctor ? "Validating..." : "Save"}
+              <Button disabled={isBusy || validating} type="submit">
+                {isBusy ? "Saving..." : validating ? "Validating..." : "Save"}
               </Button>
             </form>
           </Form>
@@ -234,7 +227,7 @@ const ClientsPage = ({ params }: { params: { projectId: string } }) => {
         <CodeBlock>{`import { AuthPortal } from '@authportal/firebase';
 
 const authportal = new AuthPortal({
-  domain: '${domains.docs[0]?.id}',
+  domain: '${domains[0]?.domain}',
   client_id: '${Object.keys(project.clients)[0]}',
   firebase_auth: getAuth(app),
 });`}</CodeBlock>

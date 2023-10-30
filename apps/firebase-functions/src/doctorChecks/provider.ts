@@ -8,10 +8,10 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { DoctorReport } from "./lib/DoctorReport";
-import { Domain } from "./lib/Domain";
 import { withFirebaseApp } from "./lib/withFirebaseApp";
 import { getHelperDomains } from "./lib/Domain";
 import { Project } from "@authportal/db-types/firestore/project";
+import { DomainWithId } from "@authportal/db-types/firestore/domain";
 
 export const ensureHasProviders = (project: Project) => {
   const { providers } = project.portal_config;
@@ -83,7 +83,7 @@ const checkForGoogleRedirectToError = async (authUri: string) => {
 
 const validateGoogleRedirectUri = async (
   project: Project,
-  domains: Domain[],
+  domains: DomainWithId[],
 ) => {
   const helperDomains = getHelperDomains(project, domains);
   const report = new DoctorReport();
@@ -102,7 +102,7 @@ const validateGoogleRedirectUri = async (
       }
     } catch (ex) {
       report.addMessage({
-        type: "internal-error",
+        type: "general/internal-error",
         message: `Failed to validate redirect uri: ${ex}`,
         stack: (ex as Error).stack,
       });
@@ -116,9 +116,8 @@ const validateGoogleRedirectUri = async (
 const checkProvider = async (
   project: Project,
   provider: Project["portal_config"]["providers"][0],
-  domains: Domain[],
+  domains: DomainWithId[],
 ) => {
-  // TODO redirect uri validation for each provider
   const { provider_id } = provider;
   switch (provider_id) {
     case EmailAuthProvider.PROVIDER_ID: {
@@ -157,13 +156,16 @@ const checkProvider = async (
     //   );
     default:
       return DoctorReport.fromMessage({
-        type: "internal-error",
+        type: "general/internal-error",
         message: `Unknown provider: ${provider_id}`,
       });
   }
 };
 
-export const checkProviders = async (project: Project, domains: Domain[]) => {
+export const checkProviders = async (
+  project: Project,
+  domains: DomainWithId[],
+) => {
   const report = new DoctorReport();
   const { providers } = project.portal_config;
   for (const provider of providers) {

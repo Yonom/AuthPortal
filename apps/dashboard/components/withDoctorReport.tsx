@@ -2,7 +2,7 @@
 
 import {
   DoctorMessage,
-  DoctorReport,
+  FirestoreDoctorReportDocument,
 } from "@authportal/db-types/firestore/doctor";
 
 export const withDoctorReport = <T extends DoctorMessage["type"]>(
@@ -10,7 +10,7 @@ export const withDoctorReport = <T extends DoctorMessage["type"]>(
   ErrorComponent: React.FC<{
     message: DoctorMessage & { type: T };
   }>,
-): React.FC<{ report: DoctorReport | null | undefined }> => {
+): React.FC<{ report: FirestoreDoctorReportDocument | null | undefined }> => {
   return function WrappedComponent({ report }) {
     // Find the error message of the specified type in the report.
     const message = report?.messages.find((msg) => msg.type === messageType);

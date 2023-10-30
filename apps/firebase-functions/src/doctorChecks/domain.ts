@@ -1,17 +1,20 @@
 import { EmailAuthProvider } from "firebase/auth";
 import { parse as pslParse } from "psl";
 import { DoctorReport } from "./lib/DoctorReport";
-import { Domain } from "./lib/Domain";
 import { getHelperDomain } from "./lib/Domain";
 import { Project } from "@authportal/db-types/firestore/project";
+import { DomainWithId } from "@authportal/db-types/firestore/domain";
 
-const checkDomainWhitelist = async (project: Project, domains: Domain[]) => {
+const checkDomainWhitelist = async (
+  project: Project,
+  domains: DomainWithId[],
+) => {
   const url = new URL("https://identitytoolkit.googleapis.com/v1/projects");
   url.searchParams.set("key", project.portal_config.firebase_config.apiKey);
   const res = await fetch(url);
   if (!res.ok) {
     return DoctorReport.fromMessage({
-      type: "internal-error",
+      type: "general/internal-error",
       message: `Failed to fetch identitytoolkit project config: ${res.status} ${res.statusText}`,
     });
   }
@@ -30,7 +33,7 @@ const checkDomainWhitelist = async (project: Project, domains: Domain[]) => {
   }
   return DoctorReport.EMPTY;
 };
-const checkHelperDomain = (project: Project, domain: Domain) => {
+const checkHelperDomain = (project: Project, domain: DomainWithId) => {
   const helperDomain = getHelperDomain(project, domain);
 
   // get the domain part of the authDomain (strip subdomains)
@@ -38,7 +41,7 @@ const checkHelperDomain = (project: Project, domain: Domain) => {
   const helperPslResult = pslParse(helperDomain);
   if (authPortalPslResult.error || helperPslResult.error) {
     return DoctorReport.fromMessage({
-      type: "internal-error",
+      type: "general/internal-error",
       message: `Failed to parse authDomain: ${domain} or ${helperDomain}`,
     });
   }
@@ -53,7 +56,10 @@ const checkHelperDomain = (project: Project, domain: Domain) => {
 
   return DoctorReport.EMPTY;
 };
-export const checkDomains = async (project: Project, domains: Domain[]) => {
+export const checkDomains = async (
+  project: Project,
+  domains: DomainWithId[],
+) => {
   // report if no domains are configured
   if (domains.length === 0) {
     return DoctorReport.fromMessage({

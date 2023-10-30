@@ -1,6 +1,6 @@
 import { FC, useMemo } from "react";
 import { SidebarNav } from "./SidebarNav";
-import { DoctorReport } from "@authportal/db-types/firestore/doctor";
+import { FirestoreDoctorReportDocument } from "@authportal/db-types/firestore/doctor";
 
 const isTruthy = <T,>(item: T | null | undefined | false | ""): item is T => {
   return !!item;
@@ -9,7 +9,7 @@ const isTruthy = <T,>(item: T | null | undefined | false | ""): item is T => {
 type ConfigNavParams = {
   projectId: string;
   setupComplete: boolean;
-  report: DoctorReport | null;
+  report: FirestoreDoctorReportDocument | null;
 };
 
 const ConfigNav: FC<ConfigNavParams> = ({
@@ -19,15 +19,13 @@ const ConfigNav: FC<ConfigNavParams> = ({
 }) => {
   const sidebarNavItems = useMemo(() => {
     const hasWarnings = (ns: string) =>
-      !!report?.messages.some(
-        (m) => m.type === ns || m.type.startsWith(ns + "/"),
-      );
+      !!report?.messages.some((m) => m.type.startsWith(ns + "/"));
 
     return [
       {
         title: "Firebase Configuration",
         href: `/projects/${projectId}/firebase-config`,
-        hasWarnings: hasWarnings("config") || hasWarnings("internal-error"),
+        hasWarnings: hasWarnings("config") || hasWarnings("general"),
       },
       setupComplete && {
         title: "Sign-in Methods",

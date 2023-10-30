@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@authportal/common-ui/ui/button";
+import { Button } from "@authportal/common-ui/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";

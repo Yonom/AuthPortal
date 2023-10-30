@@ -10,10 +10,11 @@ export type DoctorMessage =
         | "config/auth-not-enabled"
         | "provider/none-configured"
         | "domain/none-configured"
-        | "client/none-configured";
+        | "client/none-configured"
+        | "general/timeout"
     }
   | {
-      type: "internal-error";
+      type: "general/internal-error";
       message: string;
       stack?: string;
     }
@@ -38,12 +39,14 @@ export type DoctorMessage =
       client_id: string;
     };
 
-export const DoctorReport = z.object({
+export const FirestoreDoctorReportDocument = z.object({
   messages: z.array(z.custom<DoctorMessage>()),
-  created_at: z.custom<Timestamp>(),
+  created_at: z.custom<Timestamp>().nullable(),
 });
 
-export type DoctorReport = z.infer<typeof DoctorReport>;
+export type FirestoreDoctorReportDocument = z.infer<
+  typeof FirestoreDoctorReportDocument
+>;
 
 export const Project = z.object({
   admin_config: z.object({

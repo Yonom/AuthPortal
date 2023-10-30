@@ -15,4 +15,5 @@ export const ConfigKVObject = z.object({
   ),
   updated_at: z.string(),
 });
+
 export type ConfigKVObject = z.infer<typeof ConfigKVObject>;
